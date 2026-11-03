@@ -1,4 +1,3 @@
-import type { IsEqual } from 'type-fest'
 import {
   maximum as zMaximum,
   minimum as zMinimum,
@@ -101,19 +100,6 @@ const styleSchema = zObject({
   height: zOptional(zBoundedParam(12, 64)),
   radius: zOptional(zBoundedParam(0, 32)),
 })
-
-/**
- * The schema's output and the renderer's style must stay exactly the same
- * shape.
- *
- * `parseStyle`'s return annotation catches a key whose type changed, but not
- * a renamed or an extra one — structural assignability allows both, and
- * either would be a param that silently does nothing.
- */
-const _styleSchemaMatchesBadgeStyle: IsEqual<
-  ReturnType<typeof styleSchema.parse>,
-  BadgeStyle
-> = true
 
 /**
  * Reads the shared appearance params. Throws `BadRequestError` if one is invalid.

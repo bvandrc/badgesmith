@@ -13,6 +13,10 @@ import { BadRequestError } from './http.ts'
 import { findIcon } from './icons.ts'
 import type { BadgeItem, BadgeStyle } from './render.ts'
 
+// ******************************************************************************
+// parseItems
+// ******************************************************************************
+
 /** Most icon/value pairs one badge may hold, which bounds a request's work. */
 const MAX_ITEMS = 6
 
@@ -54,6 +58,10 @@ export const parseItems = (raw: string | null) => {
   }
   return items
 }
+
+// ******************************************************************************
+// parseStyle
+// ******************************************************************************
 
 const zHex = zPipe(
   zString(),

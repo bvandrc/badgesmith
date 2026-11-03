@@ -1,0 +1,15 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "lib": ["esnext"],
+    // @types/node redeclares the web globals workers-types provides, so the
+    // two cannot share a program — the tests get tsconfig.test.json instead
+    "types": ["@cloudflare/workers-types"],
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts"]
+}

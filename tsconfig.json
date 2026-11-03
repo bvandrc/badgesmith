@@ -1,0 +1,18 @@
+{
+  "compilerOptions": {
+    "strict": true,
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "allowImportingTsExtensions": true,
+    "lib": ["esnext"],
+    // @types/node redeclares the web globals workers-types provides, so the
+    // two cannot share a program — the tests get tsconfig.test.json instead
+    "types": ["@cloudflare/workers-types"],
+    // es-toolkit's declarations reference globalThis.DOMException, which
+    // workers-types does not provide; our own code is still fully checked
+    "skipLibCheck": true,
+    "noEmit": true
+  },
+  "include": ["src"],
+  "exclude": ["src/**/*.test.ts"]
+}

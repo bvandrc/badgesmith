@@ -1,0 +1,6 @@
+allowBuilds:
+  # esbuild's binary comes from its platform optional deps, so its postinstall
+  # has nothing left to do; workerd's links the platform binary `pnpm dev` runs.
+  # Without an entry for each, pnpm 11 fails install with ERR_PNPM_IGNORED_BUILDS.
+  esbuild: false
+  workerd: true

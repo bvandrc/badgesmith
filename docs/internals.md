@@ -34,6 +34,8 @@ Deploys are serialized by a `deploy` concurrency group that does not cancel in p
 
 It needs a `CLOUDFLARE_API_TOKEN` repository secret: a Cloudflare API token with the **Edit Cloudflare Workers** template, not an account API key. `wrangler` reads it from the environment, so the step is the same `pnpm deploy` you would run locally. Add `CLOUDFLARE_ACCOUNT_ID` too if the token can see more than one account, which is the error wrangler gives if so.
 
+The **E2E** workflow is `workflow_dispatch` only. It asks a _deployed_ worker for each fixture case and compares the bytes, which also covers what a unit test cannot: URL parsing, the exact content type camo demands, and the error paths. Point it at an origin with the `base_url` input, or set a `WORKER_URL` repository variable once and run it with no input. `BASE_URL=http://localhost:8787 pnpm e2e` runs the same checks against `pnpm dev`.
+
 ## Development
 
 ```sh
@@ -45,5 +47,6 @@ pnpm gen:icons   # src/generated/icons.ts, from @primer/octicons
 pnpm gen:widths  # src/generated/text-widths.ts, from anafanafo
 pnpm gen:svg     # sample.svg and the test fixtures, from the renderer
 pnpm check       # biome + tsc, no tests
+pnpm e2e         # hit a running worker: BASE_URL=http://localhost:8787 pnpm e2e
 pnpm deploy
 ```

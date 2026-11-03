@@ -1,0 +1,29 @@
+name: E2E
+
+# Manual only: it hits a deployed worker, so it depends on something outside
+# this repository being up to date — running it per push would report other
+# people's deploys as this commit's failures.
+on:
+  workflow_dispatch:
+    inputs:
+      base_url:
+        description: Worker origin to hit. Defaults to the WORKER_URL repository variable.
+        required: false
+        type: string
+
+jobs:
+  e2e:
+    name: Hit the deployed worker
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Check the deployed worker against the fixtures
+        env:
+          BASE_URL: ${{ inputs.base_url || vars.WORKER_URL }}
+        run: pnpm e2e

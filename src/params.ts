@@ -71,7 +71,7 @@ const zHex = zPipe(
 ).check(
   zRegex(
     /^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i,
-    "must be a 3- or 6-digit hex colour without '#'"
+    "must be a 3- or 6-digit hex color without '#'"
   )
 )
 

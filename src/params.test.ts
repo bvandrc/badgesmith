@@ -80,26 +80,26 @@ describe('parseStyle', () => {
     assert.deepEqual(style('items=star:1&repo=a/b&color=fff'), { color: 'fff' })
   })
 
-  test('drops a stray leading # from a colour', () => {
+  test('drops a stray leading # from a color', () => {
     assert.deepEqual(style('color=%23fff'), { color: 'fff' })
     assert.deepEqual(style('iconColor=%232f363d'), { iconColor: '2f363d' })
   })
 
-  test('rejects a colour that is not 3- or 6-digit hex', () => {
+  test('rejects a color that is not 3- or 6-digit hex', () => {
     for (const key of ['color', 'iconColor', 'textColor']) {
       rejects(
         () => style(`${key}=xyz`),
-        `${key} must be a 3- or 6-digit hex colour without '#'`
+        `${key} must be a 3- or 6-digit hex color without '#'`
       )
     }
     // only one leading # is dropped, and only at the front
     rejects(
       () => style('color=%23%23fff'),
-      "color must be a 3- or 6-digit hex colour without '#'"
+      "color must be a 3- or 6-digit hex color without '#'"
     )
     rejects(
       () => style('color=fff%23'),
-      "color must be a 3- or 6-digit hex colour without '#'"
+      "color must be a 3- or 6-digit hex color without '#'"
     )
   })
 

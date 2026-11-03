@@ -32,7 +32,7 @@ export const TEST_FIXTURE_INPUTS = {
     items: [{ icon: 'star', value: '12345' }],
     height: 48,
   },
-  // the full style surface in one go. The colours are deliberately chromatic
+  // the full style surface in one go. The colors are deliberately chromatic
   // and differently ordered — every channel differs within each one, and the
   // three run mid/low/high, high/mid/low and low/mid/high — so a swapped or
   // reversed channel would change these bytes. White, black and grey would

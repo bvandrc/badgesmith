@@ -90,7 +90,7 @@ for (const { name, options, file } of pinned) {
 for (const [label, path, status] of [
   ['missing items', '/', 400],
   ['unknown icon', '/?items=definitely-not-an-icon:1', 400],
-  ['bad colour', '/?items=star:1&color=xyz', 400],
+  ['bad color', '/?items=star:1&color=xyz', 400],
   ['unknown route', '/nope', 404],
 ] as const) {
   const res = await fetch(`${base}${path}`)

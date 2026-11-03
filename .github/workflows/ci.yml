@@ -1,0 +1,40 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+  workflow_dispatch: # Allows manual triggering
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    name: Lint, Type Check & Test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Lint package.json
+        uses: bvandrc/lint-package-json@v2
+
+      - name: Lint, Type Check & Test
+        run: pnpm check
+
+      - name: Generated files are current
+        run: |
+          pnpm gen:icons
+          pnpm gen:widths
+          pnpm gen:svg
+          if ! git diff --exit-code; then
+            echo "::error::A generated file is out of date. Run \`pnpm gen:icons\`, \`pnpm gen:widths\` and \`pnpm gen:svg\`, then commit the result."
+            exit 1
+          fi

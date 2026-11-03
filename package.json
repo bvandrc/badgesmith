@@ -1,0 +1,51 @@
+{
+  "name": "multi-icon-badge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Renders several icon/value pairs as a single SVG badge",
+  "keywords": [
+    "badge",
+    "svg",
+    "octicons",
+    "cloudflare-workers"
+  ],
+  "homepage": "https://github.com/bvandrc/multi-icon-badge",
+  "bugs": {
+    "url": "https://github.com/bvandrc/multi-icon-badge/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/bvandrc/multi-icon-badge.git"
+  },
+  "author": "Blake Vandercar",
+  "license": "ISC",
+  "type": "module",
+  "scripts": {
+    "__c0": "====================[ Build & Development ]======================",
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "gen:icons": "node --experimental-strip-types scripts/generate-icons.ts",
+    "gen:widths": "node --experimental-strip-types scripts/generate-text-widths.ts",
+    "gen:svg": "node --experimental-strip-types scripts/generate-svg.ts",
+    "__c1": "====================[ Linting & Type Checking ]==================",
+    "check": "biome check . && pnpm ts:check && pnpm test",
+    "format": "biome check . --fix",
+    "ts:check": "tsc && tsc --project tsconfig.test.json",
+    "__c2": "====================[ Unit Testing ]=============================",
+    "test": "node --experimental-strip-types --test \"src/**/*.test.ts\""
+  },
+  "dependencies": {
+    "es-toolkit": "^1",
+    "zod": "^4"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.6",
+    "@cloudflare/workers-types": "^4",
+    "@primer/octicons": "^19",
+    "@types/node": "^26",
+    "anafanafo": "^2",
+    "type-fest": "^5",
+    "typescript": "^7",
+    "wrangler": "^4"
+  }
+}

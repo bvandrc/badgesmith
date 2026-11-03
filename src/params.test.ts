@@ -18,8 +18,6 @@ const rejects = (fn: () => unknown, text: string) =>
     `expected a BadRequestError containing: ${text}`
   )
 
-const style = (query: string) => parseStyle(new URLSearchParams(query))
-
 describe('parseItems', () => {
   test('reads items', () => {
     assert.deepEqual(parseItems('star:12'), [{ icon: 'star', value: '12' }])
@@ -69,6 +67,8 @@ describe('parseItems', () => {
 })
 
 describe('parseStyle', () => {
+  const style = (query: string) => parseStyle(new URLSearchParams(query))
+
   test('reads the style params, stripping anything else', () => {
     assert.deepEqual(style(''), {})
     assert.deepEqual(style('color=fff&height=40&radius=6'), {

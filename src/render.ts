@@ -63,10 +63,6 @@ const BASE = {
   itemGap: 9,
 } as const
 
-/** Those proportions at `height`, which every dimension scales from. */
-const applyScale = (height: number) =>
-  mapValues(BASE, (value) => value * (height / BASE_HEIGHT))
-
 const escapeText = (text: string) =>
   text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`)
 
@@ -88,7 +84,11 @@ export const renderBadge = ({
   height = BASE_HEIGHT,
   radius = 0,
 }: BadgeOptions) => {
-  const { fontSize, iconSize, endPad, iconGap, itemGap } = applyScale(height)
+  // every dimension scales from the requested height
+  const { fontSize, iconSize, endPad, iconGap, itemGap } = mapValues(
+    BASE,
+    (value) => value * (height / BASE_HEIGHT)
+  )
 
   const measured = items.map((item) => {
     const icon = findIcon(item.icon)

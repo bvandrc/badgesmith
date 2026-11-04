@@ -1,15 +1,31 @@
+import type { Env } from './env.ts'
 import { BadRequestError, CONTENT_TYPES, HEADERS } from './http.ts'
+import { findProvider } from './providers/registry.ts'
 import { parseItems, parseStyle } from './query-params.ts'
-import { renderBadge } from './render.ts'
+import { type BadgeItem, renderBadge } from './render.ts'
 import { usagePage } from './usage-page.ts'
 
 /**
- * How long a rendered badge may be cached: a week.
+ * How long an explicit-value badge may be cached: a week.
  *
  * Every value lives in the URL, so a change is a new URL and a cached
  * response can never go stale.
  */
-const CACHE_SECONDS = 604_800
+const STATIC_CACHE_SECONDS = 604_800
+
+/** How long a provider's looked-up values may be cached: an hour. */
+const LIVE_CACHE_SECONDS = 3600
+
+/**
+ * How long a failed lookup may be cached: five minutes.
+ *
+ * Long enough to spare the upstream a hot loop, short enough that a badge
+ * recovers on its own without anyone intervening.
+ */
+const FAILED_LOOKUP_CACHE_SECONDS = 300
+
+/** What a provider renders in place of a value it could not look up. */
+const UNKNOWN_VALUE = '?'
 
 /**
  * How long the landing page may be cached: an hour.
@@ -33,7 +49,24 @@ const htmlResponse = (body: string, cacheSeconds: number) =>
     headers: cacheHeaders(CONTENT_TYPES.HTML, cacheSeconds),
   })
 
-const handle = (request: Request) => {
+/**
+ * The Worker runtime's edge cache and the bits of its context this uses.
+ *
+ * Declared structurally rather than taken from `@cloudflare/workers-types`,
+ * because `index.test.ts` pulls this module into the test program, which runs
+ * on node types and cannot also load workers types — their `URL` declarations
+ * are incompatible.
+ */
+declare const caches: {
+  readonly default: {
+    match(request: Request): Promise<Response | undefined>
+    put(request: Request, response: Response): Promise<void>
+  }
+}
+
+type WaitUntil = { waitUntil(work: Promise<unknown>): void }
+
+const handle = async (request: Request, env: Env, ctx: WaitUntil) => {
   try {
     const url = new URL(request.url)
     const style = parseStyle(url.searchParams)
@@ -46,7 +79,29 @@ const handle = (request: Request) => {
         return htmlResponse(usagePage(url.origin), PAGE_CACHE_SECONDS)
       }
       const items = parseItems(url.searchParams.get('items'))
-      return svgResponse(renderBadge({ ...style, items }), CACHE_SECONDS)
+      return svgResponse(renderBadge({ ...style, items }), STATIC_CACHE_SECONDS)
+    }
+
+    const provider = findProvider(url.pathname.slice(1))
+    if (provider) {
+      const cached = await caches.default.match(request)
+      if (cached) {
+        return cached
+      }
+      const values = await provider.resolve(url.searchParams, env)
+      // a failed lookup still renders, so an embedded badge never breaks
+      const items: BadgeItem[] = provider.icons.map((icon, at) => ({
+        icon,
+        value: values?.[at] ?? UNKNOWN_VALUE,
+      }))
+      const res = svgResponse(
+        renderBadge({ ...style, items }),
+        values ? LIVE_CACHE_SECONDS : FAILED_LOOKUP_CACHE_SECONDS
+      )
+      if (values) {
+        ctx.waitUntil(caches.default.put(request, res.clone()))
+      }
+      return res
     }
 
     return new Response('not found\n', {

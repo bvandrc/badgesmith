@@ -26,8 +26,11 @@ jobs:
       - name: Lint package.json
         uses: bvandrc/lint-package-json@v2
 
-      - name: Lint, Type Check & Test
+      - name: Lint & Type Check
         run: pnpm check
+
+      - name: Test
+        run: pnpm test
 
       - name: Generated files are current
         run: |

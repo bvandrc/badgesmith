@@ -29,7 +29,7 @@
     "gen:widths": "node --experimental-strip-types scripts/generate-text-widths.ts",
     "gen:svg": "node --experimental-strip-types scripts/generate-svg.ts",
     "__c1": "====================[ Linting & Type Checking ]==================",
-    "check": "biome check . && pnpm ts:check && pnpm test",
+    "check": "biome check . && pnpm ts:check",
     "format": "biome check . --fix",
     "ts:check": "tsc && tsc --project tsconfig.test.json",
     "__c2": "====================[ Unit Testing ]=============================",

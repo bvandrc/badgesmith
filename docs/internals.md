@@ -32,6 +32,6 @@ pnpm gen:all     # every generator below, which is what CI checks
 pnpm gen:icons   # src/generated/icons.ts, from @primer/octicons
 pnpm gen:widths  # src/generated/text-widths.ts, from anafanafo
 pnpm gen:svg     # sample.svg and the test fixtures, from the renderer
-pnpm check       # biome + tsc + tests
+pnpm check       # biome + tsc, no tests
 pnpm deploy
 ```

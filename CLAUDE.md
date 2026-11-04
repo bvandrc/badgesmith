@@ -31,7 +31,7 @@ Conventions live outside this file, synced from https://github.com/bvandrc/bvand
 
 - `pnpm dev` — run the worker locally on workerd. `pnpm deploy` — publish it.
 - `pnpm gen:all` — rewrite every generated file. Run it after changing the renderer, the icon source, or the width source, and commit the result; CI checks it is current. The individual `gen:icons`, `gen:widths`, and `gen:svg` exist for when you know which one you need.
-- `pnpm check` — the full gate: Biome plus both `tsc` projects plus the tests. Run before every commit; it's what CI runs. `pnpm format` — Biome check/fix.
+- `pnpm check` — Biome plus both `tsc` projects. Lint and types only; `pnpm test` is its own script and CI runs it as its own step, so a failure says which of the two broke. Run both before every commit. `pnpm format` — Biome check/fix.
 
 ## Conventions
 

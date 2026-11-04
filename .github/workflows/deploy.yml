@@ -1,0 +1,49 @@
+name: Deploy
+
+# Waits on CI rather than repeating it: CI already runs on every push to main.
+on:
+  workflow_run:
+    workflows: [CI]
+    # "completed" means finished, not passed — this fires for a failed or
+    # cancelled CI run too, and GitHub has no conclusion filter here. The
+    # job's `if` below is what actually keeps a red run from deploying.
+    types: [completed]
+    branches: [main]
+  workflow_dispatch: # Allows manual triggering, and deploying a chosen ref
+
+# One deploy at a time, and never cancelled part-way: wrangler uploading a
+# worker is not safe to interrupt, and queueing rather than cancelling means
+# two merges in quick succession both run, leaving the later one live.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Cloudflare
+    runs-on: ubuntu-latest
+
+    # workflow_run fires whatever CI concluded, so a red run must not deploy.
+    # A manual dispatch carries no workflow_run context and is let through.
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.workflow_run.conclusion == 'success'
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+        with:
+          # a workflow_run job otherwise checks out the default branch's tip,
+          # which need not be the commit CI just passed
+          ref: ${{ github.event.workflow_run.head_sha || github.ref }}
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: pnpm deploy

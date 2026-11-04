@@ -86,21 +86,39 @@ describe('parseStyle', () => {
   })
 
   test('rejects a color that is not 3- or 6-digit hex', () => {
-    for (const key of ['color', 'iconColor', 'textColor']) {
-      rejects(
-        () => style(`${key}=xyz`),
-        `${key} must be a 3- or 6-digit hex color without '#'`
-      )
+    const hex = "must be a 3- or 6-digit hex color without '#'"
+    // only the background can be dropped, so only its message offers the keyword
+    const MESSAGES = {
+      color: `${hex}, or 'none'`,
+      iconColor: hex,
+      textColor: hex,
+    }
+    for (const [key, message] of Object.entries(MESSAGES)) {
+      rejects(() => style(`${key}=xyz`), `${key} ${message}`)
     }
     // only one leading # is dropped, and only at the front
+    rejects(() => style('color=%23%23fff'), `color ${MESSAGES.color}`)
+    rejects(() => style('color=fff%23'), `color ${MESSAGES.color}`)
+  })
+
+  test("takes 'none' as a background, and only as a background", () => {
+    assert.deepEqual(style('color=none'), { color: 'none' })
+    // matched exactly, because the renderer compares the parsed value against
+    // TRANSPARENT rather than normalising it first
     rejects(
-      () => style('color=%23%23fff'),
-      "color must be a 3- or 6-digit hex color without '#'"
+      () => style('color=NONE'),
+      "color must be a 3- or 6-digit hex color without '#', or 'none'"
     )
+    // icons and text are drawn with a fill, which has no element to omit
     rejects(
-      () => style('color=fff%23'),
-      "color must be a 3- or 6-digit hex color without '#'"
+      () => style('iconColor=none'),
+      "iconColor must be a 3- or 6-digit hex color without '#'"
     )
+  })
+
+  test('reads hex in either case, and leaves the case alone', () => {
+    // case-folding here would move bytes the committed fixtures pin
+    assert.deepEqual(style('color=ABCdef'), { color: 'ABCdef' })
   })
 
   test('rejects a number outside its range, NaN included', () => {

@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import { describe, test } from 'node:test'
 
 import { SAMPLE_INPUT, TEST_FIXTURE_INPUTS } from '../__fixtures__/inputs.ts'
-import { renderBadge } from '../render.ts'
+import { renderBadge, TRANSPARENT } from '../render.ts'
 
 const read = (path: string) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
@@ -96,6 +96,16 @@ describe('renderBadge', () => {
     )
     const scale = wide.match(/scale\(([\d.]+)\)/)?.[1]
     assert.equal(scale, square.match(/scale\(([\d.]+)\)/)?.[1], 'uniform scale')
+  })
+
+  test('draws no background at all when the color is TRANSPARENT', () => {
+    const items = [{ icon: 'star', value: '1' }]
+    assert.ok(renderBadge({ items }).includes('<rect'))
+    const svg = renderBadge({ items, color: TRANSPARENT })
+    assert.ok(!svg.includes('<rect'), svg)
+    // the badge loses its background, not its contents
+    assert.ok(svg.includes('<text'))
+    assert.ok(svg.includes('<g fill='))
   })
 
   test('escapes values rather than emitting raw markup', () => {

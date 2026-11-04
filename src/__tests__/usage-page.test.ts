@@ -1,7 +1,7 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 
-import { usagePage } from '../usage.ts'
+import { usagePage } from '../usage-page.ts'
 
 describe('usagePage', () => {
   const ORIGIN = 'https://multi-icon-badge.example.workers.dev'

@@ -1,7 +1,7 @@
 import { BadRequestError, CONTENT_TYPES, HEADERS } from './http.ts'
 import { parseItems, parseStyle } from './query-params.ts'
 import { renderBadge } from './render.ts'
-import { usagePage } from './usage.ts'
+import { usagePage } from './usage-page.ts'
 
 /**
  * How long a rendered badge may be cached: a week.

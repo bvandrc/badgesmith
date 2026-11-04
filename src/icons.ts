@@ -1,4 +1,4 @@
-import { ICONS } from './icons.generated.ts'
+import { ICONS } from './generated/icons.ts'
 
 export type Icon = {
   /** path markup, already sized to the viewBox below */

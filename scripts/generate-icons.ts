@@ -1,5 +1,5 @@
 /**
- * Regenerates src/icons.generated.ts from @primer/octicons.
+ * Regenerates src/generated/icons.ts from @primer/octicons.
  *
  * The package itself stays a devDependency: its runtime object carries a
  * parsed AST, keywords, and five size variants per icon — 1.1MB to serve a
@@ -13,7 +13,7 @@ import { fileURLToPath } from 'node:url'
 import octicons from '@primer/octicons'
 import { minBy } from 'es-toolkit'
 
-const OUT = 'src/icons.generated.ts'
+const OUT = 'src/generated/icons.ts'
 
 /** An icon's smallest variant, which the renderer scales to whatever it needs. */
 const smallestVariant = (

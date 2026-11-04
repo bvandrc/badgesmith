@@ -1,5 +1,5 @@
 /**
- * Regenerates src/text-widths.generated.ts from anafanafo.
+ * Regenerates src/generated/text-widths.ts from anafanafo.
  *
  * anafanafo holds shields.io's own Verdana metrics, which is the font this
  * renderer asks for, but it reads its table with `fs` — so it cannot run in a
@@ -12,7 +12,7 @@ import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import anafanafo from 'anafanafo'
 
-const OUT = 'src/text-widths.generated.ts'
+const OUT = 'src/generated/text-widths.ts'
 const FONT_SIZE = 11
 const FONT = { font: `${FONT_SIZE}px Verdana` }
 // printable ASCII; a badge value is 12 characters at most, so anything beyond

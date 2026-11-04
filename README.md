@@ -41,7 +41,7 @@ Values live in the URL, so a changed value is a different URL — the response i
 
 Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of them, square or not.
 
-`@primer/octicons` is a _dev_ dependency rather than a runtime one: its object carries a parsed AST, keywords, and up to five size variants per icon — 1.1MB to serve a path string, none of which a bundler can tree-shake. `pnpm gen:icons` reduces it to each icon's smallest variant and writes `src/icons.generated.ts`, which is 56KB gzipped for the whole set. Run it after bumping the dependency; CI fails if the registry has drifted.
+`@primer/octicons` is a _dev_ dependency rather than a runtime one: its object carries a parsed AST, keywords, and up to five size variants per icon — 1.1MB to serve a path string, none of which a bundler can tree-shake. `pnpm gen:icons` reduces it to each icon's smallest variant and writes `src/generated/icons.ts`, which is 56KB gzipped for the whole set. Run it after bumping the dependency; CI fails if the registry has drifted.
 
 There are two runtime dependencies. `zod/mini` validates the style params. The entry point and the named imports both matter: for this exact schema, `import * as z from 'zod'` measured 93KB gzipped — more than the entire worker — because the namespace barrel defeats tree shaking and drags in a compiler and two JSON-schema processors. `zod/mini` with named imports costs ~9KB gzipped instead. `es-toolkit` supplies `sumBy`, for 113 bytes gzipped.
 
@@ -64,8 +64,8 @@ pnpm install
 pnpm dev         # local worker
 pnpm test        # node:test, no test framework needed
 pnpm gen:all     # every generator below, which is what CI checks
-pnpm gen:icons   # src/icons.generated.ts, from @primer/octicons
-pnpm gen:widths  # src/text-widths.generated.ts, from anafanafo
+pnpm gen:icons   # src/generated/icons.ts, from @primer/octicons
+pnpm gen:widths  # src/generated/text-widths.ts, from anafanafo
 pnpm gen:svg     # sample.svg and the test fixtures, from the renderer
 pnpm check       # biome + tsc + tests
 pnpm deploy

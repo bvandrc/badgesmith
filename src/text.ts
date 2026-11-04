@@ -4,7 +4,7 @@ import {
   CHAR_WIDTHS,
   FALLBACK_WIDTH,
   TABLE_FONT_SIZE,
-} from './text-widths.generated.ts'
+} from './generated/text-widths.ts'
 
 /**
  * Width of `text` in Verdana at `fontSize`, in px.

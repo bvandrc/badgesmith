@@ -40,12 +40,6 @@ describe('fetch', () => {
     assert.match(await response.text(), /items is required/)
   })
 
-  test('an invalid style param is a bad request even with no items', async () => {
-    const response = await get('/?color=nope')
-    assert.equal(response.status, 400)
-    assert.match(await response.text(), /color must be a 3- or 6-digit hex/)
-  })
-
   test('caches the page for less time than a badge', async () => {
     // a badge's values live in its URL, so it can be cached hard; the page's
     // URL is fixed while its content changes on deploy

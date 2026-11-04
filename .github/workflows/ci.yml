@@ -39,3 +39,36 @@ jobs:
             echo "::error::A generated file is out of date. Run \`pnpm gen:all\`, then commit the result."
             exit 1
           fi
+
+  e2e:
+    name: E2E on workerd
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      # the unit tests run the renderer on node; this runs the whole route on
+      # workerd, the engine Cloudflare itself runs, so it covers what node
+      # cannot: the URL parsing, the exact content type camo demands, the
+      # cache headers, and the error paths. No credentials, so it works on a
+      # fork the same as here.
+      - name: Check every route end to end
+        run: |
+          npx wrangler dev --port 8787 --local > /tmp/wrangler-dev.log 2>&1 &
+          for _ in $(seq 1 60); do
+            if curl -sSf --max-time 2 'http://127.0.0.1:8787/?items=star:1' > /dev/null 2>&1; then
+              ready=1
+              break
+            fi
+            sleep 1
+          done
+          if [ -z "$ready" ]; then
+            echo "::error::wrangler dev never became ready"
+            cat /tmp/wrangler-dev.log
+            exit 1
+          fi
+          BASE_URL=http://127.0.0.1:8787 pnpm e2e

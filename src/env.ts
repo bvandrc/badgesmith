@@ -1,10 +1,8 @@
 /**
  * The deployment's bindings and secrets.
  *
- * Each provider declares what it needs here; all of it is optional so the
- * generic `/` route works on a deployment with nothing configured.
+ * No provider needs anything yet. Each adds what it reads, optional, so a
+ * deployment with nothing configured still serves every route — a provider
+ * wanting a secret has to cope with its absence rather than refuse to run.
  */
-export type Env = {
-  /** raises the GitHub API rate limit for the `github` provider */
-  GITHUB_TOKEN?: string
-}
+export type Env = Record<string, never>

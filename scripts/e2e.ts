@@ -89,10 +89,28 @@ for (const { name, options, file } of pinned) {
   )
 }
 
+// a bare root is the usage page, not an error — the distinction the route
+// turns on, and the reason 'missing items' above carries a query
+{
+  const res = await fetch(`${base}/`)
+  const body = await res.text()
+  check('usage page: 200', res.status === 200, `got ${res.status}`)
+  check(
+    'usage page: html',
+    res.headers.get(HEADERS.CONTENT_TYPE) === CONTENT_TYPES.HTML,
+    `got ${res.headers.get(HEADERS.CONTENT_TYPE)}`
+  )
+  check(
+    'usage page: renders as a document',
+    body.startsWith('<!doctype html>'),
+    `starts with ${JSON.stringify(body.slice(0, 20))}`
+  )
+}
+
 // the error paths matter as much: a 200 carrying an error would render as a
 // broken image rather than showing the reason
 for (const [label, path, status] of [
-  ['missing items', '/', 400],
+  ['missing items', '/?color=fff', 400],
   ['unknown icon', '/?items=definitely-not-an-icon:1', 400],
   ['bad color', '/?items=star:1&color=xyz', 400],
   ['unknown route', '/nope', 404],

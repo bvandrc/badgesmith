@@ -51,7 +51,7 @@ const BASE_HEIGHT = 20
  * Matched to shields deliberately, so one of these badges can sit beside a
  * real one without looking out of place.
  */
-const BASE = {
+const BASE_PROPORTIONS = {
   fontSize: 11,
   iconSize: 14,
   // between the pill's edge and its first and last contents
@@ -86,7 +86,7 @@ export const renderBadge = ({
 }: BadgeOptions) => {
   // every dimension scales from the requested height
   const { fontSize, iconSize, endPad, iconGap, itemGap } = mapValues(
-    BASE,
+    BASE_PROPORTIONS,
     (value) => value * (height / BASE_HEIGHT)
   )
 

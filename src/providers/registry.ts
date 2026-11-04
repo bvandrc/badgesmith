@@ -1,3 +1,4 @@
+import { GITHUB_PROVIDER } from './github.ts'
 import type { Provider } from './types.ts'
 
 /**
@@ -6,7 +7,9 @@ import type { Provider } from './types.ts'
  * Adding one is a module in this folder and an entry here — the route that
  * dispatches through it needs no change.
  */
-const PROVIDERS = {} satisfies Record<string, Provider>
+const PROVIDERS = {
+  github: GITHUB_PROVIDER,
+} satisfies Record<string, Provider>
 
 // a Map, so looking up an arbitrary path is a miss rather than an index cast
 const BY_PATH: ReadonlyMap<string, Provider> = new Map(

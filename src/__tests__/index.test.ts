@@ -5,8 +5,14 @@ import { CONTENT_TYPES, HEADERS } from '../http.ts'
 import worker from '../index.ts'
 
 describe('fetch', () => {
+  // the route takes an env and a context: no case here reaches the token, and
+  // waitUntil only has to accept the promise it is handed
   const get = (path: string) =>
-    worker.fetch(new Request(`https://badge.example.dev${path}`))
+    worker.fetch(
+      new Request(`https://badge.example.dev${path}`),
+      {},
+      { waitUntil: () => undefined }
+    )
 
   const typeOf = (response: Response) =>
     response.headers.get(HEADERS.CONTENT_TYPE)

@@ -52,15 +52,15 @@ const BASE_HEIGHT = 20
  * real one without looking out of place.
  */
 const BASE_PROPORTIONS = {
-  FONT_SIZE: 11,
-  ICON_SIZE: 14,
+  fontSize: 11,
+  iconSize: 14,
   // between the pill's edge and its first and last contents
-  END_PAD: 6,
-  // between an icon and its own value, kept tighter than ITEM_GAP so a pair
+  endPad: 6,
+  // between an icon and its own value, kept tighter than itemGap so a pair
   // reads as one thing
-  ICON_GAP: 4,
+  iconGap: 4,
   // between one icon/value pair and the next
-  ITEM_GAP: 9,
+  itemGap: 9,
 } as const
 
 const escapeText = (text: string) =>
@@ -85,13 +85,10 @@ export const renderBadge = ({
   radius = 0,
 }: BadgeOptions) => {
   // every dimension scales from the requested height
-  const {
-    FONT_SIZE: fontSize,
-    ICON_SIZE: iconSize,
-    END_PAD: endPad,
-    ICON_GAP: iconGap,
-    ITEM_GAP: itemGap,
-  } = mapValues(BASE_PROPORTIONS, (value) => value * (height / BASE_HEIGHT))
+  const { fontSize, iconSize, endPad, iconGap, itemGap } = mapValues(
+    BASE_PROPORTIONS,
+    (value) => value * (height / BASE_HEIGHT)
+  )
 
   const measured = items.map((item) => {
     const icon = getIcon(item.icon)

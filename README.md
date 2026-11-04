@@ -35,6 +35,20 @@ Opening the root with no query returns a short HTML page: three live examples, e
 
 Values live in the URL, so a changed value is a different URL — the response is cached for a week and can never go stale.
 
+### `GET /<provider>` — live values
+
+A **provider** looks values up itself, for a fixed set of icons, so the URL holds no numbers — which is what keeps a generated README reproducible while the numbers stay current. Cached an hour; a lookup that fails renders `?` with a 5-minute cache rather than breaking the image. The style params above apply here too.
+
+#### `github`
+
+`GET /github?repo=owner/name` renders `git-commit` and `git-pull-request` with the repo's total commits and pull requests. Set a token to raise the rate limit (Cloudflare egress IPs are shared, so the unauthenticated 60/hour is easy to exhaust):
+
+```sh
+wrangler secret put GITHUB_TOKEN
+```
+
+Private repos aren't readable this way — pass their numbers to `/` instead.
+
 ### Icons
 
 Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of them, square or not.

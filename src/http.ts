@@ -7,10 +7,14 @@
 export const HEADERS = {
   CONTENT_TYPE: 'content-type',
   CACHE_CONTROL: 'cache-control',
+  ACCEPT: 'accept',
+  AUTHORIZATION: 'authorization',
+  USER_AGENT: 'user-agent',
+  LINK: 'link',
 } as const
 
 /**
- * Content types this worker serves.
+ * Content types this worker serves or asks for.
  *
  * The charset is part of each value so it can be used verbatim: GitHub's image
  * proxy sends `X-Content-Type-Options: nosniff`, and an SVG served as anything
@@ -20,6 +24,7 @@ export const CONTENT_TYPES = {
   SVG: 'image/svg+xml; charset=utf-8',
   PLAIN_TEXT: 'text/plain; charset=utf-8',
   HTML: 'text/html; charset=utf-8',
+  GITHUB_JSON: 'application/vnd.github+json',
 } as const
 
 /**

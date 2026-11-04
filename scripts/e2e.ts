@@ -107,12 +107,27 @@ for (const { name, options, file } of pinned) {
   )
 }
 
+// a smoke test, deliberately: the counts change between runs, and GitHub's
+// unauthenticated limit is per address — a CI runner shares one — so asserting
+// either the values or that the lookup succeeded would flake. This asks only
+// whether the route is registered and still serves a badge.
+{
+  const res = await fetch(`${base}/github?repo=bvandrc/multi-icon-badge`)
+  check('github: 200', res.status === 200, `got ${res.status}`)
+  check(
+    'github: exact content type',
+    res.headers.get(HEADERS.CONTENT_TYPE) === CONTENT_TYPES.SVG,
+    `got ${res.headers.get(HEADERS.CONTENT_TYPE)}`
+  )
+}
+
 // the error paths matter as much: a 200 carrying an error would render as a
 // broken image rather than showing the reason
 for (const [label, path, status] of [
   ['missing items', '/?color=fff', 400],
   ['unknown icon', '/?items=definitely-not-an-icon:1', 400],
   ['bad color', '/?items=star:1&color=xyz', 400],
+  ['github without a repo', '/github', 400],
   ['unknown route', '/nope', 404],
 ] as const) {
   const res = await fetch(`${base}${path}`)

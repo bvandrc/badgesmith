@@ -1,0 +1,12 @@
+{
+  "$schema": "./node_modules/@biomejs/biome/configuration_schema.json",
+  "extends": ["./conventions/biome.base.jsonc"],
+  "files": {
+    "includes": [
+      "**",
+      // written by `pnpm gen:all`: 408 inlined octicon paths and the
+      // Verdana metrics table, neither of which is ours to format
+      "!!src/generated"
+    ]
+  }
+}

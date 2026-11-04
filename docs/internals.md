@@ -34,6 +34,10 @@ Deploys are serialized by a `deploy` concurrency group that does not cancel in p
 
 It needs a `CLOUDFLARE_API_TOKEN` repository secret: a Cloudflare API token with the **Edit Cloudflare Workers** template, not an account API key. `wrangler` reads it from the environment, so the step is the same `pnpm deploy` you would run locally. Add `CLOUDFLARE_ACCOUNT_ID` too if the token can see more than one account, which is the error wrangler gives if so.
 
+CI's **E2E on workerd** job runs the same `scripts/e2e.ts` against `wrangler dev` on every pull request. The unit tests exercise the renderer on node; this exercises the whole route on workerd, the engine Cloudflare itself runs, so it covers what node cannot — URL parsing, the exact content type camo demands, the cache lifetimes, and the error paths. It needs no credentials, so it works on a fork exactly as it does here, and it waits for the server with a bounded loop that fails loudly rather than hanging if `wrangler dev` never comes up.
+
+A preview deployment per pull request would add little over this: `wrangler dev` is the same workerd, so all a preview would additionally prove is that Cloudflare's own front end and the upload itself work — and a failed upload is already caught by the deploy after merge.
+
 The **E2E** workflow is `workflow_dispatch` only. It asks a _deployed_ worker for each fixture case and compares the bytes, which also covers what a unit test cannot: URL parsing, the exact content type camo demands, and the error paths. It defaults to the deployment named in `scripts/e2e.ts` — committed rather than held in a repository variable, since it is a public URL that is already an image source wherever a badge is used, and a variable would be a setup step no clone can see it needs. The `base_url` input overrides it per run, and `BASE_URL=http://localhost:8787 pnpm e2e` runs the same checks against `pnpm dev`.
 
 ## Development

@@ -12,15 +12,9 @@ https://multi-icon-badge.<subdomain>.workers.dev/?items=git-commit:370,git-pull-
 
 shields.io supports exactly **one** logo per badge, and hard-codes custom SVG logos to a 14×14 box (`DEFAULT_LOGO_HEIGHT`; the aspect-preserving `logoSize=auto` path only runs for named simple-icons). The PR that would have lifted that, [badges/shields#11093](https://github.com/badges/shields/pull/11093), was closed unmerged.
 
-Two icons therefore mean two images — and in a GitHub README that forces a visible gap, because GitHub's markdown CSS applies `padding-left: 20px` to every `img[align=right]`:
+So several icons mean several images, and a row of images is not one badge. They size independently, wrap independently, load and fail independently, and the gap between them belongs to whatever is rendering them rather than to you. One request returning one SVG gives you a single element to place, with the spacing settled where the badge is drawn.
 
-```css
-.markdown-body img[align="right"] {
-  padding-left: 20px;
-}
-```
-
-Only `<img>` and `<table>` float via the `align` attribute (on a `<div>` it maps to `text-align`), so two right-aligned badges can never sit flush. One image is the only way to have several icons flush _and_ floated.
+That last point bites hardest wherever the host adds spacing you can't override. A GitHub README is one such place: its markdown CSS applies `padding-left: 20px` to every `img[align=right]`, and since only `<img>` and `<table>` float via the `align` attribute, two right-aligned badges can never sit flush there.
 
 ## Routes
 

@@ -2,8 +2,8 @@ import assert from 'node:assert/strict'
 import { readFileSync } from 'node:fs'
 import { describe, test } from 'node:test'
 
-import { SAMPLE_INPUT, TEST_FIXTURE_INPUTS } from './__fixtures__/inputs.ts'
-import { renderBadge } from './render.ts'
+import { SAMPLE_INPUT, TEST_FIXTURE_INPUTS } from '../__fixtures__/inputs.ts'
+import { renderBadge } from '../render.ts'
 
 const read = (path: string) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
@@ -11,17 +11,17 @@ const read = (path: string) =>
 const stale = (file: string) =>
   `${file} differs — run \`pnpm gen:svg\` if the change is intended`
 
-// one test per input, so a failure names the file that moved rather than
-// stopping at the first one
 const widthOf = (svg: string) =>
   Number(svg.match(/^<svg[^>]*width="([\d.]+)"/)?.[1])
 
 describe('committed SVGs', () => {
+  // one test per input, so a failure names the file that moved rather than
+  // stopping at the first one
   for (const [name, options] of Object.entries(TEST_FIXTURE_INPUTS)) {
     test(`renders the ${name} fixture byte for byte`, () => {
       assert.equal(
         `${renderBadge(options)}\n`,
-        read(`./__fixtures__/${name}.svg`),
+        read(`../__fixtures__/${name}.svg`),
         stale(`${name}.svg`)
       )
     })
@@ -31,7 +31,7 @@ describe('committed SVGs', () => {
   test('renders sample.svg byte for byte', () => {
     assert.equal(
       `${renderBadge(SAMPLE_INPUT)}\n`,
-      read('../sample.svg'),
+      read('../../sample.svg'),
       stale('sample.svg')
     )
   })

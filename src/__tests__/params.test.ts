@@ -1,8 +1,8 @@
 import assert from 'node:assert/strict'
 import { describe, test } from 'node:test'
 
-import { BadRequestError } from './http.ts'
-import { parseItems, parseStyle } from './params.ts'
+import { BadRequestError } from '../http.ts'
+import { parseItems, parseStyle } from '../params.ts'
 
 /**
  * Asserts `fn` rejects the input, for the reason `text` names.

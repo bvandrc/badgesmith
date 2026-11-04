@@ -39,10 +39,12 @@ describe('committed SVGs', () => {
 
 describe('renderBadge', () => {
   test('renders one pill holding every icon and value', () => {
+    // values deliberately not SAMPLE_INPUT's, so nobody reads this as a test
+    // of the pinned sample and unifies the two
     const svg = renderBadge({
       items: [
-        { icon: 'git-commit', value: '370' },
-        { icon: 'git-pull-request', value: '264' },
+        { icon: 'git-commit', value: '128' },
+        { icon: 'git-pull-request', value: '45' },
       ],
     })
     assert.match(svg, /^<svg xmlns="http:\/\/www\.w3\.org\/2000\/svg"/)
@@ -52,9 +54,9 @@ describe('renderBadge', () => {
       2,
       'both icons tinted'
     )
-    assert.match(svg, />370</)
-    assert.match(svg, />264</)
-    assert.match(svg, /aria-label="370 git-commit, 264 git-pull-request"/)
+    assert.match(svg, />128</)
+    assert.match(svg, />45</)
+    assert.match(svg, /aria-label="128 git-commit, 45 git-pull-request"/)
   })
 
   test('references nothing external, which the image proxy forbids', () => {

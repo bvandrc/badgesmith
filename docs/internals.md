@@ -38,7 +38,9 @@ CI's **E2E on workerd** job runs the same `scripts/e2e.ts` against `wrangler dev
 
 A preview deployment per pull request would add little over this: `wrangler dev` is the same workerd, so all a preview would additionally prove is that Cloudflare's own front end and the upload itself work — and a failed upload is already caught by the deploy after merge.
 
-The **E2E** workflow is `workflow_dispatch` only. It asks a _deployed_ worker for each fixture case and compares the bytes, which also covers what a unit test cannot: URL parsing, the exact content type camo demands, and the error paths. It defaults to the deployment named in `scripts/e2e.ts` — committed rather than held in a repository variable, since it is a public URL that is already an image source wherever a badge is used, and a variable would be a setup step no clone can see it needs. The `base_url` input overrides it per run, and `BASE_URL=http://localhost:8787 pnpm e2e` runs the same checks against `pnpm dev`.
+The **E2E** workflow runs daily and on demand. It asks a _deployed_ worker for each fixture case and compares the bytes, which also covers what a unit test cannot: URL parsing, the exact content type camo demands, and the error paths. It defaults to the deployment named in `scripts/e2e.ts` — committed rather than held in a repository variable, since it is a public URL that is already an image source wherever a badge is used, and a variable would be a setup step no clone can see it needs. The `base_url` input overrides it per run, and `BASE_URL=http://localhost:8787 pnpm e2e` runs the same checks against `pnpm dev`.
+
+The daily run exists because nothing else looks at the live worker again after its deploy: CI checks a commit on workerd before merge, the deploy ships it, and then no one is watching. It would catch a hand-run deploy from another ref, a runtime change underneath it, or the worker no longer being there — with a day's detection window rather than a week's, since a broken badge is visible in every README embedding it. Note that GitHub disables scheduled workflows in a repository with no activity for 60 days.
 
 ## Development
 

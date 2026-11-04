@@ -1,9 +1,17 @@
 name: E2E
 
-# Manual only: it hits a deployed worker, so it depends on something outside
-# this repository being up to date — running it per push would report other
-# people's deploys as this commit's failures.
+# Hits the deployed worker, so it is not tied to a push: a commit's own code is
+# already checked against workerd by CI, and running this per push would report
+# whatever is currently deployed as that commit's failure.
+#
+# The daily run is the only thing that ever looks at the live worker again after
+# its deploy. Nothing else would notice it drifting from what the repository
+# says — a hand-run deploy from another ref, a runtime change underneath it, or
+# the worker simply no longer being there.
 on:
+  schedule:
+    # 06:37, off the hour because minute 0 is congested and delayed
+    - cron: '37 6 * * *'
   workflow_dispatch:
     inputs:
       base_url:

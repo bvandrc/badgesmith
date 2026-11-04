@@ -1,5 +1,5 @@
 import { BadRequestError, CONTENT_TYPES, HEADERS } from './http.ts'
-import { parseItems, parseStyle } from './params.ts'
+import { parseItems, parseStyle } from './query-params.ts'
 import { renderBadge } from './render.ts'
 
 /**

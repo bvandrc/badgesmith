@@ -39,8 +39,6 @@ Values live in the URL, so a changed value is a different URL — the response i
 
 A **provider** looks values up itself, for a fixed set of icons, so the URL holds no numbers — which is what keeps a generated README reproducible while the numbers stay current. Cached an hour; a lookup that fails renders `?` with a 5-minute cache rather than breaking the image. The style params above apply here too.
 
-The rendering core is generic and does no I/O: a provider is the only part that knows about any particular service, and lives behind `src/providers/`. Adding one is a module in that folder — a list of icons and a `resolve` that reads its own query params — plus an entry in `src/providers/registry.ts`. The route dispatches through the registry, so it needs no change.
-
 #### `github`
 
 `GET /github?repo=owner/name` renders `git-commit` and `git-pull-request` with the repo's total commits and pull requests. Set a token to raise the rate limit (Cloudflare egress IPs are shared, so the unauthenticated 60/hour is easy to exhaust):

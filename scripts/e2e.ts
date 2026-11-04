@@ -5,8 +5,8 @@
  * deployed route reaches the same bytes through URL parsing, headers and the
  * network — the parts a unit test cannot reach.
  *
- * Needs BASE_URL, e.g. `BASE_URL=http://localhost:8787 pnpm e2e` against
- * `pnpm dev`, or the deployed origin.
+ * Hits the deployment below unless BASE_URL names another origin, so
+ * `BASE_URL=http://localhost:8787 pnpm e2e` checks `pnpm dev` instead.
  */
 
 import { readFileSync } from 'node:fs'
@@ -18,13 +18,17 @@ import {
 import { CONTENT_TYPES, HEADERS } from '../src/http.ts'
 import type { BadgeOptions } from '../src/render.ts'
 
-const base = process.env.BASE_URL?.replace(/\/+$/, '')
-if (!base) {
-  console.error(
-    'BASE_URL is required — the deployed worker origin, e.g. https://multi-icon-badge.<subdomain>.workers.dev'
-  )
-  process.exit(1)
-}
+/**
+ * The deployment this checks by default.
+ *
+ * Committed rather than configured: it is a public URL, embedded as an image
+ * source wherever a badge is used, so hiding it in a repository variable buys
+ * nothing and costs a setup step no clone or fork can see it needs.
+ */
+const DEPLOYED_ORIGIN = 'https://multi-icon-badge.bvandrc.workers.dev'
+
+const base = (process.env.BASE_URL || DEPLOYED_ORIGIN).replace(/\/+$/, '')
+console.log(`# ${base}\n`)
 
 /** The query string that asks the route for what `options` renders directly. */
 const queryFor = ({ items, ...style }: BadgeOptions) => {

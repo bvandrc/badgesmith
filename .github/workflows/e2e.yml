@@ -7,7 +7,7 @@ on:
   workflow_dispatch:
     inputs:
       base_url:
-        description: Worker origin to hit. Defaults to the WORKER_URL repository variable.
+        description: Worker origin to hit. Defaults to the deployment in scripts/e2e.ts.
         required: false
         type: string
 
@@ -25,5 +25,5 @@ jobs:
 
       - name: Check the deployed worker against the fixtures
         env:
-          BASE_URL: ${{ inputs.base_url || vars.WORKER_URL }}
+          BASE_URL: ${{ inputs.base_url }}
         run: pnpm e2e

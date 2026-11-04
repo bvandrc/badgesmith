@@ -1,10 +1,12 @@
 name: Deploy
 
-# Waits on CI rather than repeating it: CI already runs on every push to main,
-# so deploying is a consequence of that run going green.
+# Waits on CI rather than repeating it: CI already runs on every push to main.
 on:
   workflow_run:
     workflows: [CI]
+    # "completed" means finished, not passed — this fires for a failed or
+    # cancelled CI run too, and GitHub has no conclusion filter here. The
+    # job's `if` below is what actually keeps a red run from deploying.
     types: [completed]
     branches: [main]
   workflow_dispatch: # Allows manual triggering, and deploying a chosen ref

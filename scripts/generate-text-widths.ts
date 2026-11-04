@@ -2,9 +2,10 @@
  * Regenerates src/generated/text-widths.ts from anafanafo.
  *
  * anafanafo holds shields.io's own Verdana metrics, which is the font this
- * renderer asks for, but it reads its table with `fs` — so it cannot run in a
- * Worker. Extracting the widths here keeps the runtime dependency-free and the
- * numbers exact rather than estimated.
+ * renderer asks for. It would run in a Worker, but it carries four full font
+ * tables to answer for the 95 characters at one size that a badge can show.
+ * Extracting the widths here keeps the runtime dependency-free and the numbers
+ * exact rather than estimated.
  */
 
 import { writeFileSync } from 'node:fs'

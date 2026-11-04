@@ -1,6 +1,6 @@
 import { mapValues, sumBy } from 'es-toolkit'
 
-import { findIcon } from './icons.ts'
+import { getIcon } from './icons.ts'
 import { textWidth } from './text.ts'
 
 export type BadgeItem = { icon: string; value: string }
@@ -94,10 +94,7 @@ export const renderBadge = ({
   } = mapValues(BASE_PROPORTIONS, (value) => value * (height / BASE_HEIGHT))
 
   const measured = items.map((item) => {
-    const icon = findIcon(item.icon)
-    if (!icon) {
-      throw new Error(`unknown icon: ${item.icon}`)
-    }
+    const icon = getIcon(item.icon)
     // octicons are not all square — scale by height and let width follow, so a
     // wide one (logo-github is 49x16) renders undistorted and advances further
     const iconScale = iconSize / icon.height

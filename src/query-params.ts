@@ -10,7 +10,7 @@ import {
 } from 'zod/mini'
 
 import { BadRequestError } from './http.ts'
-import { findIcon } from './icons.ts'
+import { hasIcon } from './icons.ts'
 import type { BadgeItem, BadgeStyle } from './render.ts'
 
 // ******************************************************************************
@@ -44,7 +44,7 @@ export const parseItems = (raw: string | null) => {
         `malformed item "${part}" — expected icon:value`
       )
     }
-    if (!findIcon(icon)) {
+    if (!hasIcon(icon)) {
       throw new BadRequestError(
         `unknown icon "${icon}" — any octicon slug works, see https://primer.style/foundations/icons`
       )

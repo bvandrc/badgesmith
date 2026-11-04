@@ -107,17 +107,48 @@ for (const { name, options, file } of pinned) {
   )
 }
 
-// a smoke test, deliberately: the counts change between runs, and GitHub's
+// A provider's bytes cannot be pinned: the counts change, and GitHub's
 // unauthenticated limit is per address — a CI runner shares one — so asserting
-// either the values or that the lookup succeeded would flake. This asks only
-// whether the route is registered and still serves a badge.
+// the values, or that the lookup succeeded at all, would flake. The rendered
+// `aria-label` is where the output names what it drew, so it carries the parts
+// that do not change: which icons, in which order, each holding a count or the
+// placeholder a failed lookup leaves behind.
 {
   const res = await fetch(`${base}/github?repo=bvandrc/multi-icon-badge`)
+  const body = await res.text()
+  // `${value} ${slug}` per item, joined with ', ' — see renderBadge
+  const pairs = (body.match(/aria-label="([^"]*)"/)?.[1] ?? '')
+    .split(', ')
+    .map((pair) => pair.split(' '))
+  const maxAge = Number(
+    res.headers.get(HEADERS.CACHE_CONTROL)?.match(/max-age=(\d+)/)?.[1]
+  )
+
   check('github: 200', res.status === 200, `got ${res.status}`)
   check(
     'github: exact content type',
     res.headers.get(HEADERS.CONTENT_TYPE) === CONTENT_TYPES.SVG,
     `got ${res.headers.get(HEADERS.CONTENT_TYPE)}`
+  )
+  // hard-coded rather than read off the provider: this is the contract the
+  // route promises, so a change to its icons should fail here and be noticed
+  check(
+    'github: renders its own icons, in order',
+    pairs.map(([, icon]) => icon).join() === 'git-commit,git-pull-request',
+    `got ${JSON.stringify(pairs.map(([, icon]) => icon))}`
+  )
+  check(
+    'github: every value is a count or the placeholder',
+    pairs.length === 2 &&
+      pairs.every(([value]) => /^(?:\d+|\?)$/.test(value ?? '')),
+    `got ${JSON.stringify(pairs.map(([value]) => value))}`
+  )
+  // a badge whose values came in the URL caches for a week, so this also says
+  // the request went through the provider rather than the explicit-value route
+  check(
+    'github: cached as a lookup, not as a static badge',
+    maxAge === 3600 || maxAge === 300,
+    `max-age=${maxAge}`
   )
 }
 

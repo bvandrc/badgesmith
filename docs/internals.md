@@ -24,7 +24,11 @@ Because SVG can't measure text and no font can be loaded, the pill is sized from
 
 ## Deploying
 
-`deploy.yml` runs on every push to `main`, so merging is what ships. It can also be dispatched by hand to redeploy without a commit, or to deploy a chosen ref — which is why it repeats `pnpm check` and `pnpm test` rather than trusting that CI already ran: a manual run can name a ref that never had a pull request.
+`deploy.yml` triggers on CI completing for `main`, so merging is what ships and the checks are not run twice. It deploys only when that run concluded `success` — `workflow_run` fires whatever the conclusion was — and checks out `github.event.workflow_run.head_sha`, because a `workflow_run` job otherwise gets the default branch's tip rather than the commit CI actually passed.
+
+It can also be dispatched by hand, to redeploy without a commit or to deploy another ref. A dispatch carries no `workflow_run` context, so the job's condition lets it through and it checks out the ref it was given — which does mean a hand-run deploy is only as checked as the ref you point it at.
+
+Because `workflow_run` only fires for a workflow file already on the default branch, this cannot be exercised from a pull request: the first real run is after it merges.
 
 Deploys are serialized by a `deploy` concurrency group that does not cancel in progress. Interrupting wrangler mid-upload is not safe, and queueing means two merges in quick succession both run, leaving the later one live.
 

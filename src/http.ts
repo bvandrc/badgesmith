@@ -19,6 +19,7 @@ export const HEADERS = {
 export const CONTENT_TYPES = {
   SVG: 'image/svg+xml; charset=utf-8',
   PLAIN_TEXT: 'text/plain; charset=utf-8',
+  HTML: 'text/html; charset=utf-8',
 } as const
 
 /**

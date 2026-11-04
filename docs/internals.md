@@ -10,6 +10,14 @@ Why this worker is built the way it is, and what to know before changing it. For
 
 There are two runtime dependencies. `zod/mini` validates the style params. The entry point and the named imports both matter: for this exact schema, `import * as z from 'zod'` measured 93KB gzipped — more than the entire worker — because the namespace barrel defeats tree shaking and drags in a compiler and two JSON-schema processors. `zod/mini` with named imports costs ~9KB gzipped instead. `es-toolkit` supplies `sumBy`, for 113 bytes gzipped.
 
+## Providers
+
+The rendering core is generic and does no I/O. A provider is the only part that knows about any particular service: a module in `src/providers/` exporting a list of icons and a `resolve` that reads its own query params, plus an entry in `src/providers/registry.ts`. The route dispatches through the registry by path segment, so adding one needs no change to `index.ts`.
+
+`resolve` returns one value per icon, or null when the lookup could not complete. Null is not an error — the route renders `?` in each slot, so an embedded badge degrades to question marks instead of a broken image, and that response is cached for five minutes: long enough to spare the upstream a hot loop, short enough that the badge recovers on its own. A successful lookup caches for an hour. Values that came in the URL cache for a week, since a change to one of those is a different URL.
+
+Anything a provider reads from the environment goes on `Env` in `src/env.ts`, optional. A deployment configured with nothing still serves every route, so a provider that wants a secret has to cope with its absence rather than refuse to run.
+
 ## Constraints worth knowing before changing the renderer
 
 GitHub proxies every README image through camo, which imposes three things:

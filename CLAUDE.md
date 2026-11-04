@@ -9,7 +9,7 @@ A Cloudflare Worker that renders several icon/value pairs as a **single** SVG ba
 - **`zod/mini`, named imports only**: `import { object as zObject } from 'zod/mini'` costs ~9KB gzipped; `import { z } from 'zod/mini'` costs 85KB, because `z` is a 257-member object that defeats tree shaking, and the full `zod` namespace costs 93KB — more than the entire worker. Biome's `noNamespaceImport` catches `import * as z` but **not** `import { z }`, so this one is on you.
 - **Two tsconfigs**: `@types/node` and `@cloudflare/workers-types` redeclare the same web globals and cannot share a program, so `tsconfig.json` covers `src` with workers types and excludes tests, while `tsconfig.test.json` covers the tests and `scripts` with node types. `pnpm ts:check` runs both.
 - **No path aliases**: the tests execute on bare node, which does not read `tsconfig` `paths` — an aliased import fails at runtime with `ERR_MODULE_NOT_FOUND`. A `__tests__` file reaches its subject with `../`, as the testing conventions ask, and everything else relatively too.
-- **Workflows**: `ci.yml` is the gate — biome, both `tsc` passes, the tests, `bvandrc/lint-package-json`, and a step that runs `pnpm gen:all` and fails on any drift. `sync-conventions.yml` pulls `conventions/` from the shared conventions repo.
+- **Workflows**: `ci.yml` is the gate — biome, both `tsc` passes, the tests, `bvandrc/lint-package-json`, and a step that runs `pnpm gen:all` and fails on any drift. `deploy.yml` deploys on every push to `main`, and can also be run by hand against a chosen ref. It repeats the lint, type and test steps rather than trusting CI, since a manual run can name a ref that never had a pull request. `sync-conventions.yml` pulls `conventions/` from the shared conventions repo.
 
 ## Docs
 

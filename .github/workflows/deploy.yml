@@ -1,0 +1,42 @@
+name: Deploy
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch: # Allows manual triggering, and deploying a chosen ref
+
+# One deploy at a time, and never cancelled part-way: wrangler uploading a
+# worker is not safe to interrupt, and queueing rather than cancelling means
+# two merges in quick succession both run, leaving the later one live.
+concurrency:
+  group: deploy
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    name: Deploy to Cloudflare
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v7
+
+      - name: Setup
+        uses: ./.github/actions/setup
+
+      # repeated from CI rather than assumed: a manual run can name any ref,
+      # including one that never had a pull request
+      - name: Lint & Type Check
+        run: pnpm check
+
+      - name: Test
+        run: pnpm test
+
+      - name: Deploy
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        run: pnpm deploy

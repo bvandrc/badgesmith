@@ -22,6 +22,14 @@ Because SVG can't measure text and no font can be loaded, the pill is sized from
 
 `render.test.ts` compares the renderer against the fixture SVGs in `src/__fixtures__/` and against `sample.svg`, one test each, with the inputs they were rendered from in `src/__fixtures__/inputs.ts` so the generator and the tests cannot disagree about what is pinned. An intended change to the output is recorded by running `pnpm gen:svg` and reading the diff. CI runs `pnpm gen:all` and fails on any difference.
 
+## Deploying
+
+`deploy.yml` runs on every push to `main`, so merging is what ships. It can also be dispatched by hand to redeploy without a commit, or to deploy a chosen ref — which is why it repeats `pnpm check` and `pnpm test` rather than trusting that CI already ran: a manual run can name a ref that never had a pull request.
+
+Deploys are serialized by a `deploy` concurrency group that does not cancel in progress. Interrupting wrangler mid-upload is not safe, and queueing means two merges in quick succession both run, leaving the later one live.
+
+It needs a `CLOUDFLARE_API_TOKEN` repository secret: a Cloudflare API token with the **Edit Cloudflare Workers** template, not an account API key. `wrangler` reads it from the environment, so the step is the same `pnpm deploy` you would run locally. Add `CLOUDFLARE_ACCOUNT_ID` too if the token can see more than one account, which is the error wrangler gives if so.
+
 ## Development
 
 ```sh

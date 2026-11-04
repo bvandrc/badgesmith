@@ -18,7 +18,11 @@ That last point bites hardest wherever the host adds spacing you can't override.
 
 ## Routes
 
-### `GET /` — explicit values
+### `GET /` — the usage page
+
+Opening the root with no query returns a short HTML page: three live examples, each rendered by the worker serving it. Any query at all means a badge was intended, so a malformed one still gets a 400 rather than the page.
+
+### `GET /?items=…` — explicit values
 
 | param | default | notes |
 | --- | --- | --- |

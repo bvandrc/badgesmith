@@ -31,10 +31,8 @@ jobs:
 
       - name: Generated files are current
         run: |
-          pnpm gen:icons
-          pnpm gen:widths
-          pnpm gen:svg
+          pnpm gen:all
           if ! git diff --exit-code; then
-            echo "::error::A generated file is out of date. Run \`pnpm gen:icons\`, \`pnpm gen:widths\` and \`pnpm gen:svg\`, then commit the result."
+            echo "::error::A generated file is out of date. Run \`pnpm gen:all\`, then commit the result."
             exit 1
           fi

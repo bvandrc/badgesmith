@@ -55,7 +55,7 @@ GitHub proxies every README image through camo, which imposes three things:
 
 Because SVG can't measure text and no font can be loaded, the pill is sized from a table of Verdana advance widths. `pnpm gen:widths` generates it from [anafanafo](https://github.com/metabolize/anafanafo) — shields.io's own font metrics — so the numbers are measured rather than estimated. anafanafo reads its table with `fs` and so cannot run in a Worker, which is why it stays a devDependency and the widths are generated, exactly as the icons are. A character outside printable ASCII is measured as the widest one in the table, so text can never overflow the pill. CI fails if the table has drifted.
 
-`render.test.ts` compares the renderer against the fixture SVGs in `src/__fixtures__/` and against `sample.svg`, one test each, with the inputs they were rendered from in `src/__fixtures__/inputs.ts` so the generator and the tests cannot disagree about what is pinned. An intended change to the output is recorded by running `pnpm gen:svg` and reading the diff. CI runs every generator and fails on any difference.
+`render.test.ts` compares the renderer against the fixture SVGs in `src/__fixtures__/` and against `sample.svg`, one test each, with the inputs they were rendered from in `src/__fixtures__/inputs.ts` so the generator and the tests cannot disagree about what is pinned. An intended change to the output is recorded by running `pnpm gen:svg` and reading the diff. CI runs `pnpm gen:all` and fails on any difference.
 
 ## Development
 
@@ -63,6 +63,7 @@ Because SVG can't measure text and no font can be loaded, the pill is sized from
 pnpm install
 pnpm dev         # local worker
 pnpm test        # node:test, no test framework needed
+pnpm gen:all     # every generator below, which is what CI checks
 pnpm gen:icons   # src/icons.generated.ts, from @primer/octicons
 pnpm gen:widths  # src/text-widths.generated.ts, from anafanafo
 pnpm gen:svg     # sample.svg and the test fixtures, from the renderer

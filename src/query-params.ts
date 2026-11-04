@@ -11,7 +11,7 @@ import {
 
 import { BadRequestError } from './http.ts'
 import { hasIcon } from './icons.ts'
-import type { BadgeItem, BadgeStyle } from './render.ts'
+import { type BadgeItem, type BadgeStyle, TRANSPARENT } from './render.ts'
 
 // ******************************************************************************
 // parseItems
@@ -63,16 +63,26 @@ export const parseItems = (raw: string | null) => {
 // parseStyle
 // ******************************************************************************
 
-const zHex = zPipe(
-  zString(),
-  // a stray leading '#' is dropped rather than rejected, so the value
-  // interpolates into `fill="#${value}"` either way
-  zTransform((value) => value.replace(/^#/, ''))
-).check(
-  zRegex(
-    /^(?:[0-9a-f]{3}|[0-9a-f]{6})$/i,
-    "must be a 3- or 6-digit hex color without '#'"
-  )
+/** The hex a color param may carry, in 3- or 6-digit form. */
+const HEX = '[0-9a-fA-F]{3}|[0-9a-fA-F]{6}'
+
+/** A color param accepting `pattern`, which reports `message` when it does not. */
+const zColorLike = (pattern: string, message: string) =>
+  zPipe(
+    zString(),
+    // a stray leading '#' is dropped rather than rejected, so the value
+    // interpolates into `fill="#${value}"` either way
+    zTransform((value) => value.replace(/^#/, ''))
+  ).check(zRegex(new RegExp(`^(?:${pattern})$`), message))
+
+const zHex = zColorLike(HEX, "must be a 3- or 6-digit hex color without '#'")
+
+// hex matches in either case, while the keyword must be lowercase: the
+// renderer compares the parsed value against TRANSPARENT directly, and
+// case-folding hex here would move bytes the fixtures pin
+const zBackground = zColorLike(
+  `${TRANSPARENT}|${HEX}`,
+  `must be a 3- or 6-digit hex color without '#', or '${TRANSPARENT}'`
 )
 
 /** A param holding a number within an inclusive range. */
@@ -93,7 +103,7 @@ const zBoundedParam = (min: number, max: number) => {
  * untouched, and an absent param stays absent for `renderBadge` to default.
  */
 const styleSchema = zObject({
-  color: zOptional(zHex),
+  color: zOptional(zBackground),
   iconColor: zOptional(zHex),
   textColor: zOptional(zHex),
   // under 12 the text no longer fits the pill it is centred in

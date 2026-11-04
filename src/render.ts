@@ -5,10 +5,17 @@ import { textWidth } from './text.ts'
 
 export type BadgeItem = { icon: string; value: string }
 
+/** The `color` that draws no background at all, letting the page show through. */
+export const TRANSPARENT = 'none'
+
 /** How the pill looks, independent of what it holds. */
 export type BadgeStyle = {
   /**
-   * Pill background, hex without the leading '#'.
+   * Pill background, hex without the leading '#', or `TRANSPARENT` for none.
+   *
+   * With no background the icons and text carry their own contrast, so a
+   * badge meant for both GitHub themes needs a mid grey rather than the
+   * default white text.
    *
    * @default '2f363d' — near-black slate grey, GitHub's dark surface
    */
@@ -126,5 +133,11 @@ export const renderBadge = ({
 
   const w = round(width)
   const label = measured.map((m) => `${m.value} ${m.slug}`).join(', ')
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${round(height)}" viewBox="0 0 ${w} ${round(height)}" role="img" aria-label="${escapeText(label)}"><rect width="${w}" height="${round(height)}" rx="${round(radius)}" fill="#${color}"/>${parts.join('')}</svg>`
+  // dropped entirely rather than drawn with fill="none", so a transparent
+  // badge carries no element whose only effect would be on its own bounds
+  const background =
+    color === TRANSPARENT
+      ? ''
+      : `<rect width="${w}" height="${round(height)}" rx="${round(radius)}" fill="#${color}"/>`
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${round(height)}" viewBox="0 0 ${w} ${round(height)}" role="img" aria-label="${escapeText(label)}">${background}${parts.join('')}</svg>`
 }

@@ -27,11 +27,13 @@ Opening the root with no query returns a short HTML page: three live examples, e
 | param | default | notes |
 | --- | --- | --- |
 | `items` | _required_ | comma-separated `icon:value` pairs, up to 6; value 1–12 chars |
-| `color` | `2f363d` | pill background, 3- or 6-digit hex, no `#` |
+| `color` | `2f363d` | pill background, 3- or 6-digit hex, no `#`, or `none` for no background |
 | `iconColor` | `8B949E` |  |
 | `textColor` | `fff` |  |
 | `height` | `20` | 12–64; everything scales from it |
 | `radius` | `0` | corner radius; `0` matches shields' flat-square |
+
+`color=none` draws no background, so the badge sits on whatever is behind it. Nothing then separates the badge from the page, so `iconColor` and `textColor` have to carry their own contrast — a README shown on both GitHub themes wants a mid grey such as `6E7681` rather than the default white text, which disappears on a light background.
 
 Values live in the URL, so a changed value is a different URL — the response is cached for a week and can never go stale.
 

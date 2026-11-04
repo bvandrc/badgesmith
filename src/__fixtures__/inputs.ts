@@ -1,4 +1,4 @@
-import type { BadgeOptions } from '../render.ts'
+import { type BadgeOptions, TRANSPARENT } from '../render.ts'
 
 /**
  * The badge shown in the README; `sample.svg` is generated from it.
@@ -47,6 +47,18 @@ export const TEST_FIXTURE_INPUTS = {
     textColor: '0cf',
     height: 28,
     radius: 6,
+  },
+  // no background element at all, with colors that read on a light page and a
+  // dark one alike — what a README embeds when it wants no pill
+  transparent: {
+    items: [
+      { icon: 'git-commit', value: '547' },
+      { icon: 'git-pull-request', value: '0' },
+    ],
+    color: TRANSPARENT,
+    iconColor: '6E7681',
+    textColor: '6E7681',
+    height: 12,
   },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {

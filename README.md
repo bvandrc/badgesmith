@@ -56,6 +56,22 @@ https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&color=82
 https://badgesmith.bvandrc.workers.dev/?items=rocket:shipped,%F0%9F%9A%80%20shipped&color=1f6feb&iconColor=fff
 ```
 
+**Brand marks for what a project is built with**
+
+<a href="https://badgesmith.bvandrc.workers.dev/?items=typescript:5.9,react:19,vite:7&amp;color=1f2328&amp;iconColor=fff"><img src="https://badgesmith.bvandrc.workers.dev/?items=typescript:5.9,react:19,vite:7&amp;color=1f2328&amp;iconColor=fff" alt="Brand marks for what a project is built with"/></a>
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=typescript:5.9,react:19,vite:7&color=1f2328&iconColor=fff
+```
+
+**An icon on its own, written with a trailing colon**
+
+<a href="https://badgesmith.bvandrc.workers.dev/?items=python:,postgresql:,docker:&amp;color=none&amp;iconColor=8B949E&amp;height=20&amp;padY=0"><img src="https://badgesmith.bvandrc.workers.dev/?items=python:,postgresql:,docker:&amp;color=none&amp;iconColor=8B949E&amp;height=20&amp;padY=0" alt="An icon on its own, written with a trailing colon"/></a>
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=python:,postgresql:,docker:&color=none&iconColor=8B949E&height=20&padY=0
+```
+
 **Up to six items**
 
 <a href="https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&amp;radius=4"><img src="https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&amp;radius=4" alt="Up to six items"/></a>

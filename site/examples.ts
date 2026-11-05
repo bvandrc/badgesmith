@@ -39,6 +39,14 @@ export const EXAMPLES: readonly Example[] = [
     path: '/?items=rocket:shipped,%F0%9F%9A%80%20shipped&color=1f6feb&iconColor=fff',
   },
   {
+    title: 'Brand marks for what a project is built with',
+    path: '/?items=typescript:5.9,react:19,vite:7&color=1f2328&iconColor=fff',
+  },
+  {
+    title: 'An icon on its own, written with a trailing colon',
+    path: '/?items=python:,postgresql:,docker:&color=none&iconColor=8B949E&height=20&padY=0',
+  },
+  {
     title: 'Up to six items',
     path: '/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&radius=4',
   },

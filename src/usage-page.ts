@@ -1,5 +1,5 @@
 /** The repository, which holds the full parameter reference this page omits. */
-const REPO_URL = 'https://github.com/bvandrc/multi-icon-badge'
+const REPO_URL = 'https://github.com/bvandrc/badgesmith'
 
 /**
  * The query strings this page demonstrates.
@@ -38,7 +38,7 @@ export const usagePage = (origin: string) => {
 <html lang="en">
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>multi-icon-badge</title>
+<title>badgesmith</title>
 <style>
 :root { color-scheme: light dark; --fg: #1f2328; --bg: #fff; --muted: #59636e; --line: #d1d9e0; }
 @media (prefers-color-scheme: dark) {
@@ -55,7 +55,7 @@ code { font-size: .8125rem; color: var(--muted); word-break: break-all; }
 a { color: inherit; }
 footer { margin-top: 2rem; font-size: .875rem; }
 </style>
-<h1>multi-icon-badge</h1>
+<h1>badgesmith</h1>
 <p>Several icon/value pairs as a single SVG badge. Any
 <a href="https://primer.style/foundations/icons">octicon</a> slug works.</p>
 <ul>${examples}</ul>

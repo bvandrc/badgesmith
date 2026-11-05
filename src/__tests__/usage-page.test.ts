@@ -4,7 +4,7 @@ import { describe, test } from 'node:test'
 import { usagePage } from '../usage-page.ts'
 
 describe('usagePage', () => {
-  const ORIGIN = 'https://multi-icon-badge.example.workers.dev'
+  const ORIGIN = 'https://badgesmith.example.workers.dev'
 
   test('points every example at the origin it was given', () => {
     const html = usagePage(ORIGIN)
@@ -33,14 +33,14 @@ describe('usagePage', () => {
       .filter((url) => !url.startsWith(ORIGIN))
     assert.deepEqual(remote, [
       'https://primer.style/foundations/icons',
-      'https://github.com/bvandrc/multi-icon-badge',
+      'https://github.com/bvandrc/badgesmith',
     ])
   })
 
   test('is a document a browser will render', () => {
     const html = usagePage(ORIGIN)
     assert.match(html, /^<!doctype html>/)
-    assert.match(html, /<title>multi-icon-badge<\/title>/)
+    assert.match(html, /<title>badgesmith<\/title>/)
     assert.match(html, /<meta name="viewport"/)
   })
 })

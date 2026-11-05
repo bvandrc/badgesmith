@@ -1,5 +1,5 @@
 {
-  "name": "multi-icon-badge",
+  "name": "badgesmith",
   "version": "1.0.0",
   "private": true,
   "description": "Renders several icon/value pairs as a single SVG badge",
@@ -9,13 +9,13 @@
     "octicons",
     "cloudflare-workers"
   ],
-  "homepage": "https://github.com/bvandrc/multi-icon-badge",
+  "homepage": "https://github.com/bvandrc/badgesmith",
   "bugs": {
-    "url": "https://github.com/bvandrc/multi-icon-badge/issues"
+    "url": "https://github.com/bvandrc/badgesmith/issues"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/bvandrc/multi-icon-badge.git"
+    "url": "git+https://github.com/bvandrc/badgesmith.git"
   },
   "author": "Blake Vandercar",
   "license": "ISC",

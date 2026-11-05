@@ -162,6 +162,17 @@ describe('parseStyle', () => {
     rejects(() => style('iconSide='), 'iconSide must be left or right')
   })
 
+  test('reads font, and rejects a face it has no metrics for', () => {
+    assert.deepEqual(style('font=arial'), { font: 'arial' })
+    assert.deepEqual(style('font=verdana'), { font: 'verdana' })
+    const message = 'font must be one of verdana, arial, times, courier'
+    // a face the tables do not cover would be measured against the wrong
+    // metrics, leaving the text wider or narrower than the pill drawn for it
+    rejects(() => style('font=helvetica'), message)
+    rejects(() => style('font=Arial'), message)
+    rejects(() => style('font='), message)
+  })
+
   test('reads iconScale, and will not let it pass 1', () => {
     assert.deepEqual(style('iconScale=0.7'), { iconScale: 0.7 })
     assert.deepEqual(style('iconScale=1'), { iconScale: 1 })

@@ -39,11 +39,15 @@ export const EXAMPLES: readonly Example[] = [
     path: '/?items=rocket:shipped,%F0%9F%9A%80%20shipped&color=1f6feb&iconColor=fff',
   },
   {
+    title: 'An icon on its own, written with a trailing colon',
+    path: '/?items=shield-check:,law:MIT,tag:v2.1.0&color=1a7f37&iconColor=fff',
+  },
+  {
     title: 'Brand marks for what a project is built with',
     path: '/?items=typescript:5.9,react:19,vite:7&color=1f2328&iconColor=fff',
   },
   {
-    title: 'An icon on its own, written with a trailing colon',
+    title: 'Brand marks with no values at all',
     path: '/?items=python:,postgresql:,docker:&color=none&iconColor=8B949E&height=20&padY=0',
   },
   {

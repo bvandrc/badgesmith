@@ -129,8 +129,17 @@ export const TEST_FIXTURE_INPUTS = {
     font: 'arial',
     fontSize: 20,
   },
-  // a brand mark from simple-icons, on its own and beside a value. An icon
-  // with no value takes no gap after it, and its slug is what the badge reads
+  // an icon on its own, beside a pair and a value alone, so the fixture pins
+  // all three forms and the gap an icon with no value does not take
+  'icon-only': {
+    items: [
+      { icon: 'shield-check' },
+      { icon: 'star', value: '9' },
+      { value: 'ready' },
+    ],
+  },
+  // the same shapes drawn with brand marks, which are 24x24 where an octicon
+  // is 16x16, so this pins that they scale to the same box
   'brand-icons': {
     items: [
       { icon: 'typescript' },

@@ -35,7 +35,11 @@ jobs:
       - name: Generated files are current
         run: |
           pnpm gen:all
-          if ! git diff --exit-code; then
+          # status rather than diff, so a generated file that was never
+          # committed fails too, not only one that changed
+          if [ -n "$(git status --porcelain)" ]; then
+            git status --short
+            git diff
             echo "::error::A generated file is out of date. Run \`pnpm gen:all\`, then commit the result."
             exit 1
           fi

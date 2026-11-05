@@ -171,6 +171,12 @@ describe('parseStyle', () => {
     rejects(() => style('iconScale=0.1'), message)
   })
 
+  test('reads bold, which the query carries as a word', () => {
+    assert.deepEqual(style('bold=true'), { bold: true })
+    assert.deepEqual(style('bold=false'), { bold: false })
+    rejects(() => style('bold=yes'), 'bold must be true or false')
+  })
+
   test('reads underline, which the query carries as a word', () => {
     assert.deepEqual(style('underline=true'), { underline: true })
     assert.deepEqual(style('underline=false'), { underline: false })

@@ -199,6 +199,25 @@ describe('renderBadge', () => {
     assert.equal(widthOf(lined), widthOf(plain))
   })
 
+  test('bold marks every value, and is measured against its own face', () => {
+    const items = [
+      { icon: 'star', value: '12' },
+      { icon: 'tag', value: 'v1' },
+    ]
+    const plain = renderBadge({ items })
+    const heavy = renderBadge({ items, bold: true })
+
+    assert.equal(plain.match(/font-weight/g), null)
+    assert.equal(heavy.match(/font-weight="bold"/g)?.length, 2)
+
+    // the bold face advances further, so the pill has to be wider — the
+    // whole point of carrying a second table rather than reusing the first
+    assert.ok(
+      widthOf(heavy) > widthOf(plain),
+      `${widthOf(heavy)} should exceed ${widthOf(plain)}`
+    )
+  })
+
   test('escapes values rather than emitting raw markup', () => {
     const svg = renderBadge({ items: [{ icon: 'tag', value: '<b>&"' }] })
     assert.doesNotMatch(svg, /<b>/)

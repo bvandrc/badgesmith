@@ -43,7 +43,14 @@ export const UsagePage = () => (
       <h1>badgesmith</h1>
       <p>
         Several icon/value pairs as a single SVG badge. Any{' '}
-        <a href="https://primer.style/foundations/icons">octicon</a> slug works.
+        <a href="https://primer.style/foundations/icons">octicon</a> slug works,
+        plus brand marks for languages and the tools built around them, from{' '}
+        <a href="https://simpleicons.org">simple-icons</a>. Those are a curated
+        set:{' '}
+        <a href="https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts">
+          the list
+        </a>{' '}
+        is open to an issue or a pull request for one it does not carry.
       </p>
       <table>
         {[HERO, ...EXAMPLES].map((example) => (

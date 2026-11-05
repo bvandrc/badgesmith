@@ -140,6 +140,13 @@ describe('parseStyle', () => {
     assert.deepEqual(style('padY=5&height=12'), { padY: 5, height: 12 })
   })
 
+  test('reads iconSide, and rejects a side that is not one', () => {
+    assert.deepEqual(style('iconSide=right'), { iconSide: 'right' })
+    assert.deepEqual(style('iconSide=left'), { iconSide: 'left' })
+    rejects(() => style('iconSide=top'), 'iconSide must be left or right')
+    rejects(() => style('iconSide='), 'iconSide must be left or right')
+  })
+
   test('rejects a number outside its range, NaN included', () => {
     const height = 'height must be a number between 12 and 64'
     for (const raw of ['11', '65', 'abc', '']) {

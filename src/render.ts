@@ -5,6 +5,11 @@ import { textWidth } from './text.ts'
 
 export type BadgeItem = { icon: string; value: string }
 
+/** The sides an icon may sit on, relative to its own value. */
+export const ICON_SIDES = ['left', 'right'] as const
+
+export type IconSide = (typeof ICON_SIDES)[number]
+
 /** The `color` that draws no background at all, letting the page show through. */
 export const TRANSPARENT = 'none'
 
@@ -49,6 +54,15 @@ export type BadgeStyle = {
    * @default 15% of `height` — the shields proportion, 3px at the default
    */
   padY?: number
+  /**
+   * Which side of its value each icon sits on.
+   *
+   * The badge is the same width either way: only the order within a pair
+   * changes, not the room it takes.
+   *
+   * @default 'left' — the icon leads, as shields' logo does
+   */
+  iconSide?: IconSide
   /**
    * Corner radius in px, at the pill's natural height.
    *
@@ -110,6 +124,7 @@ export const renderBadge = ({
   height = BASE_HEIGHT,
   padY,
   radius = 0,
+  iconSide = 'left',
 }: BadgeOptions) => {
   // Contents scale to the room padY leaves rather than to the box, so
   // trimming it grows them instead of cropping the pill. The two branches are
@@ -148,18 +163,28 @@ export const renderBadge = ({
   const iconY = (height - iconSize) / 2
   let x = endPad
   const parts: string[] = []
+  const baseline = round((height + DIGIT_CAP_RATIO * fontSize) / 2)
   for (const m of measured) {
-    parts.push(
-      `<g fill="#${iconColor}" transform="translate(${round(x)} ${round(iconY)}) scale(${round(m.iconScale)})">${m.path}</g>`
-    )
-    x += m.iconWidth + iconGap
-    parts.push(
-      `<text x="${round(x)}" y="${round((height + DIGIT_CAP_RATIO * fontSize) / 2)}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}">${escapeText(m.value)}</text>`
-    )
-    x += m.valueWidth + itemGap
+    const icon = (at: number) =>
+      `<g fill="#${iconColor}" transform="translate(${round(at)} ${round(iconY)}) scale(${round(m.iconScale)})">${m.path}</g>`
+    const value = (at: number) =>
+      `<text x="${round(at)}" y="${baseline}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}">${escapeText(m.value)}</text>`
+
+    // the pair occupies the same run either way, so only what is drawn at
+    // each end of it changes
+    const [first, second, firstWidth] =
+      iconSide === 'left'
+        ? [icon, value, m.iconWidth]
+        : [value, icon, m.valueWidth]
+    parts.push(first(x))
+    x += firstWidth + iconGap
+    parts.push(second(x))
+    x += (iconSide === 'left' ? m.valueWidth : m.iconWidth) + itemGap
   }
 
   const w = round(width)
+  // reads as "19 git-commit" whichever side the icon is drawn on: the label
+  // is what the badge says, not how it is laid out
   const label = measured.map((m) => `${m.value} ${m.slug}`).join(', ')
   // dropped entirely rather than drawn with fill="none", so a transparent
   // badge carries no element whose only effect would be on its own bounds

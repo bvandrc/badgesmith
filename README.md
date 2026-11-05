@@ -32,7 +32,10 @@ Opening the root with no query returns a short HTML page: three live examples, e
 | `textColor` | `fff` |  |
 | `height` | `20` | 12–64; the box the contents are centred in |
 | `padY` | 15% of `height` | 0–32; space above and below the contents, under half of `height` |
+| `iconSide` | `left` | `left` or `right`; which side of its value each icon sits on |
 | `radius` | `0` | corner radius; `0` matches shields' flat-square |
+
+`iconSide=right` draws each icon after its own value instead of before it. The badge is the same width either way — only the order within a pair changes — and the `aria-label` still reads `370 git-commit`, since it says what the badge holds rather than how it is arranged.
 
 Contents scale to the room `padY` leaves them, not to `height`, so trimming the padding grows the icons and text rather than cropping the pill. `height=14&padY=0` renders the default 11px text in a 14px box — 14px being as short as it goes at that text size, since the icon is the taller of the two. Going shorter still is allowed and shrinks the text with it.
 

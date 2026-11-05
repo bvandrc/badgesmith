@@ -33,7 +33,13 @@ console.log(`# ${base}\n`)
 /** The query string that asks the route for what `options` renders directly. */
 const queryFor = ({ items, ...style }: BadgeOptions) => {
   const params = new URLSearchParams({
-    items: items.map(({ icon, value }) => `${icon}:${value}`).join(','),
+    items: items
+      // an item with no icon goes over as its value alone, the way the
+      // parser reads it back
+      .map(({ icon, value }) =>
+        icon === undefined ? value : `${icon}:${value}`
+      )
+      .join(','),
   })
   for (const [key, value] of Object.entries(style)) {
     params.set(key, String(value))

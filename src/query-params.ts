@@ -27,10 +27,15 @@ import {
 /** Most icon/value pairs one badge may hold, which bounds a request's work. */
 const MAX_ITEMS = 6
 
-/** Longest value an item may carry, which bounds how wide a pill can get. */
-const MAX_VALUE_LENGTH = 12
+/**
+ * Longest value an item may carry, which bounds how wide a pill can get.
+ *
+ * Room for a short label rather than only a count, now that an item can be a
+ * value on its own. Six of them is still a bounded width.
+ */
+const MAX_VALUE_LENGTH = 32
 
-/** Parses `items=icon:value,icon:value`. Throws `BadRequestError` if invalid. */
+/** Parses `items=icon:value,value,…`. Throws `BadRequestError` if invalid. */
 export const parseItems = (raw: string | null) => {
   if (!raw) {
     throw new BadRequestError(
@@ -45,23 +50,26 @@ export const parseItems = (raw: string | null) => {
   for (const part of parts) {
     // `extra` catches a second colon, so `a:b:c` is rejected rather than
     // quietly read as the value `b:c`
-    const [icon, value, ...extra] = part.split(':')
-    if (!icon || !value || extra.length > 0) {
+    const [head, tail, ...extra] = part.split(':')
+    // no colon at all is a value on its own, which draws without an icon
+    const [icon, value] = tail === undefined ? [undefined, head] : [head, tail]
+    // an empty icon is a stray leading colon, not a value on its own
+    if (!value || icon === '' || extra.length > 0) {
       throw new BadRequestError(
-        `malformed item "${part}" — expected icon:value`
+        `malformed item "${part}" — expected icon:value, or value alone`
       )
     }
-    if (!hasIcon(icon)) {
+    if (icon !== undefined && !hasIcon(icon)) {
       throw new BadRequestError(
         `unknown icon "${icon}" — any octicon slug works, see https://primer.style/foundations/icons`
       )
     }
     if (value.length > MAX_VALUE_LENGTH) {
       throw new BadRequestError(
-        `value for "${icon}" must be at most ${MAX_VALUE_LENGTH} characters`
+        `value for "${icon ?? value}" must be at most ${MAX_VALUE_LENGTH} characters`
       )
     }
-    items.push({ icon, value })
+    items.push(icon === undefined ? { value } : { icon, value })
   }
   return items
 }

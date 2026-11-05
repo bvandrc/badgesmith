@@ -162,6 +162,15 @@ describe('parseStyle', () => {
     rejects(() => style('iconSide='), 'iconSide must be left or right')
   })
 
+  test('reads iconScale, and will not let it pass 1', () => {
+    assert.deepEqual(style('iconScale=0.7'), { iconScale: 0.7 })
+    assert.deepEqual(style('iconScale=1'), { iconScale: 1 })
+    const message = 'iconScale must be a number between 0.25 and 1'
+    // above 1 the icon would be cut off by the badge's own edges
+    rejects(() => style('iconScale=1.5'), message)
+    rejects(() => style('iconScale=0.1'), message)
+  })
+
   test('rejects a number outside its range, NaN included', () => {
     const height = 'height must be a number between 12 and 64'
     for (const raw of ['11', '65', 'abc', '']) {

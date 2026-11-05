@@ -4,7 +4,7 @@ import { describe, test } from 'node:test'
 
 import { SAMPLE_INPUT, TEST_FIXTURE_INPUTS } from '../__fixtures__/inputs.ts'
 import { getIcon } from '../icons.ts'
-import { renderBadge, TRANSPARENT } from '../render.ts'
+import { BASE_HEIGHT, renderBadge, TRANSPARENT } from '../render.ts'
 
 const read = (path: string) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
@@ -157,6 +157,29 @@ describe('renderBadge', () => {
     const star = getIcon('star')
     const iconWidth = (star.width / star.height) * 14
     assert.equal(widthOf(alone), round(widthOf(withIcon) - iconWidth - 4))
+  })
+
+  test('iconScale shrinks the icon, and keeps it on the middle', () => {
+    const items = [{ icon: 'star', value: '12' }]
+    const iconOf = (svg: string) => {
+      const m = svg.match(/translate\([\d.]+ ([\d.]+)\) scale\(([\d.]+)\)/)
+      return { y: Number(m?.[1]), scale: Number(m?.[2]) }
+    }
+    const full = iconOf(renderBadge({ items }))
+    const half = iconOf(renderBadge({ items, iconScale: 0.5 }))
+
+    assert.equal(half.scale, full.scale / 2)
+    // narrower, by the width the icon gave up
+    assert.ok(
+      widthOf(renderBadge({ items, iconScale: 0.5 })) <
+        widthOf(renderBadge({ items }))
+    )
+
+    // each is drawn half of its own leftover height from the top, so the
+    // height it occupies is what its offset implies — and that halves with
+    // it, which is what keeps the icon's middle on the badge's
+    const drawnHeight = (y: number) => BASE_HEIGHT - 2 * y
+    assert.equal(drawnHeight(half.y), drawnHeight(full.y) / 2)
   })
 
   test('escapes values rather than emitting raw markup', () => {

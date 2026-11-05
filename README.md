@@ -33,7 +33,10 @@ Opening the root with no query returns a short HTML page: three live examples, e
 | `height` | `20` | 12–64; the box the contents are centred in |
 | `padY` | 15% of `height` | 0–32; space above and below the contents, under half of `height` |
 | `iconSide` | `left` | `left` or `right`; which side of its value each icon sits on |
+| `iconScale` | `1` | 0.25–1; how large each icon is against its value |
 | `radius` | `0` | corner radius; `0` matches shields' flat-square |
+
+`iconScale` draws the icons smaller against their values. At 1 an icon fills the height the contents are given, which is taller than the text beside it; lower brings it nearer the text's own size, and the badge narrows by what the icon gives up. It stops at 1 because the icon already fills that height — a larger one would run past the badge and be cut off by its edges.
 
 `iconSide=right` draws each icon after its own value instead of before it. The badge is the same width either way — only the order within a pair changes — and the `aria-label` still reads `370 git-commit`, since it says what the badge holds rather than how it is arranged.
 

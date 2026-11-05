@@ -29,6 +29,41 @@ describe('fetch', () => {
     assert.match(await response.text(), /^<!doctype html>/)
   })
 
+  // the page's own image sources, with the entity-escaped separators undone
+  const getPageImages = async () => {
+    const html = await (await get('/')).text()
+    return [...html.matchAll(/<img src="([^"]+)"/g)].map(([, src]) =>
+      src.replaceAll('&amp;', '&')
+    )
+  }
+
+  test('renders every explicit-value badge the landing page shows', async () => {
+    const srcs = await getPageImages()
+    assert.ok(srcs.length >= 3, `expected several examples, got ${srcs.length}`)
+    for (const src of srcs) {
+      // root-relative, so the deployment serving the page renders its badges
+      assert.match(src, /^\/[^/]/, src)
+    }
+    // a provider's badge would look its values up over the network
+    for (const src of srcs.filter((path) => path.startsWith('/?'))) {
+      const response = await get(src)
+      assert.equal(response.status, 200, src)
+      assert.equal(typeOf(response), CONTENT_TYPES.SVG, src)
+    }
+  })
+
+  test('the landing page references nothing external but its own links', async () => {
+    const html = await (await get('/')).text()
+    assert.doesNotMatch(html, /<script|<link|@import/)
+    const remote = [...html.matchAll(/(?:src|href)="(https?:\/\/[^"]+)"/g)].map(
+      ([, url]) => url
+    )
+    assert.deepEqual(remote, [
+      'https://primer.style/foundations/icons',
+      'https://github.com/bvandrc/badgesmith',
+    ])
+  })
+
   test('serves a badge once the root is given a query', async () => {
     const response = await get('/?items=star:12')
     assert.equal(response.status, 200)

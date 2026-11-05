@@ -40,12 +40,12 @@ https://badgesmith.bvandrc.workers.dev/?items=star:1.2k,repo-forked:89,eye:42&co
 https://badgesmith.bvandrc.workers.dev/?items=check-circle:passing,shield-check:A%2B,versions:v2.1.0&color=1a7f37&iconColor=fff
 ```
 
-**A value with no icon reads as a label**
+**A value with no icon reads as a label, and an emoji can mark it**
 
-<a href="https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&amp;color=8250df&amp;iconColor=fff"><img src="https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&amp;color=8250df&amp;iconColor=fff" alt="A value with no icon reads as a label"/></a>
+<a href="https://badgesmith.bvandrc.workers.dev/?items=%F0%9F%9A%80%20stable,tag:v2.1.0,law:MIT&amp;color=8250df&amp;iconColor=fff"><img src="https://badgesmith.bvandrc.workers.dev/?items=%F0%9F%9A%80%20stable,tag:v2.1.0,law:MIT&amp;color=8250df&amp;iconColor=fff" alt="A value with no icon reads as a label, and an emoji can mark it"/></a>
 
 ```
-https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&color=8250df&iconColor=fff
+https://badgesmith.bvandrc.workers.dev/?items=%F0%9F%9A%80%20stable,tag:v2.1.0,law:MIT&color=8250df&iconColor=fff
 ```
 
 **Up to six items**

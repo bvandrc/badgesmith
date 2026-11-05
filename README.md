@@ -148,7 +148,7 @@ Opening the root with no query returns an HTML page of the same examples as abov
 
 | param | default | notes |
 | --- | --- | --- |
-| `items` | _required_ | comma-separated `icon:value` pairs, up to 6; a value alone draws without an icon; value 1–32 chars |
+| `items` | _required_ | comma-separated `icon:value` pairs, up to 6; a value alone draws without an icon; value 1–64 chars |
 | `color` | `2f363d` | pill background, 3- or 6-digit hex, no `#`, or `none` for no background |
 | `iconColor` | `8B949E` |  |
 | `textColor` | `fff` |  |

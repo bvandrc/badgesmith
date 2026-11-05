@@ -64,19 +64,33 @@ describe('parseItems', () => {
   })
 
   test('rejects an over-long value', () => {
-    const thirtyTwo = '1'.repeat(32)
+    const atLimit = '1'.repeat(64)
     rejects(
-      () => parseItems(`star:${thirtyTwo}3`),
-      'value for "star" must be at most 32 characters'
+      () => parseItems(`star:${atLimit}3`),
+      'value for "star" must be at most 64 characters'
     )
-    // thirty-two is the limit, not past it
-    assert.deepEqual(parseItems(`star:${thirtyTwo}`), [
-      { icon: 'star', value: thirtyTwo },
+    // sixty-four is the limit, not past it
+    assert.deepEqual(parseItems(`star:${atLimit}`), [
+      { icon: 'star', value: atLimit },
     ])
     // an item with no icon is named by its own value when it is too long
     rejects(
-      () => parseItems(`${thirtyTwo}3`),
-      `value for "${thirtyTwo}3" must be at most 32 characters`
+      () => parseItems(`${atLimit}3`),
+      `value for "${atLimit}3" must be at most 64 characters`
+    )
+  })
+
+  test('counts a value in code units, which emoji spend several of', () => {
+    // 🖥️ is a surrogate pair plus a variation selector: three each, so
+    // twenty-one of them reach the limit and twenty-two pass it
+    const monitor = '🖥️'
+    assert.equal(monitor.length, 3)
+    assert.deepEqual(parseItems(monitor.repeat(21)), [
+      { value: monitor.repeat(21) },
+    ])
+    rejects(
+      () => parseItems(monitor.repeat(22)),
+      `value for "${monitor.repeat(22)}" must be at most 64 characters`
     )
   })
 })

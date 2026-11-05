@@ -8,11 +8,14 @@
  * `fallback` is the widest glyph in that face, used for anything absent, so
  * text is never measured too narrow for the pill it has to fit. `capRatio`
  * is the font's cap height over its em, which the baseline centres on.
+ * `ink` is how far its marks reach either side of that baseline, which is
+ * what bounds how large the text can be set in a given box.
  */
 export const FONT_METRICS = {
   verdana: {
     family: 'Verdana,DejaVu Sans,sans-serif',
     capRatio: 8 / 11,
+    ink: { above: 0.7998046875, below: 0.23583984375 },
     normal: {
       fontSize: 11,
       fallback: 11.84,
@@ -219,6 +222,7 @@ export const FONT_METRICS = {
   arial: {
     family: 'Arial,Liberation Sans,Helvetica,sans-serif',
     capRatio: 0.68798828125,
+    ink: { above: 0.7421875, below: 0.22216796875 },
     normal: {
       fontSize: 11,
       fallback: 11.16650390625,
@@ -425,6 +429,7 @@ export const FONT_METRICS = {
   times: {
     family: 'Times New Roman,Liberation Serif,Times,serif',
     capRatio: 0.65478515625,
+    ink: { above: 0.72412109375, below: 0.220703125 },
     normal: {
       fontSize: 11,
       fallback: 10.38232421875,
@@ -631,6 +636,7 @@ export const FONT_METRICS = {
   courier: {
     family: 'Courier New,Liberation Mono,monospace',
     capRatio: 0.65869140625,
+    ink: { above: 0.7392578125, below: 0.22216796875 },
     normal: {
       fontSize: 11,
       fallback: 6.60107421875,

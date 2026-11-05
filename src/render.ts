@@ -100,6 +100,17 @@ export type BadgeStyle = {
    */
   radius?: number
   /**
+   * Text size in px, overriding the size the box would otherwise set.
+   *
+   * By default the text scales with the room `padY` leaves, at the renderer's
+   * own ratio of font to icon box. Setting it decouples the two, so a badge
+   * can hold larger text without growing the box its neighbours align to.
+   * Too large for that box is an error rather than a crop.
+   *
+   * @default 11/14 of the room the contents are given
+   */
+  fontSize?: number
+  /**
    * Which face every value is drawn in.
    *
    * Only families a reader already has, since the proxy serving this SVG
@@ -115,6 +126,20 @@ export type BadgeOptions = BadgeStyle & { items: BadgeItem[] }
 
 /** The height the proportions below are expressed at. */
 export const BASE_HEIGHT = 20
+
+/**
+ * The room the contents are given, which the text is sized against.
+ *
+ * Mirrors the two branches `renderBadge` scales by, so a caller can ask what
+ * a `fontSize` will have to fit inside before handing one over.
+ */
+export const contentsHeight = ({
+  height = BASE_HEIGHT,
+  padY,
+}: Pick<BadgeStyle, 'height' | 'padY'>) =>
+  padY === undefined
+    ? (height / BASE_HEIGHT) * BASE_PROPORTIONS.iconSize
+    : height - 2 * padY
 
 /**
  * Shields' flat-square proportions at `BASE_HEIGHT`.
@@ -160,6 +185,7 @@ export const renderBadge = ({
   underline = false,
   bold = false,
   font = 'verdana',
+  fontSize: fontSizeOverride,
 }: BadgeOptions) => {
   // Contents scale to the room padY leaves rather than to the box, so
   // trimming it grows them instead of cropping the pill. The two branches are
@@ -170,10 +196,16 @@ export const renderBadge = ({
     padY === undefined
       ? height / BASE_HEIGHT
       : (height - 2 * padY) / BASE_PROPORTIONS.iconSize
-  const { fontSize, iconSize, endPad, iconGap, itemGap } = mapValues(
-    BASE_PROPORTIONS,
-    (value) => value * scale
-  )
+  const {
+    fontSize: scaledFontSize,
+    iconSize,
+    endPad,
+    iconGap,
+    itemGap,
+  } = mapValues(BASE_PROPORTIONS, (value) => value * scale)
+  // only the text is decoupled: the icons, the end padding and the gaps still
+  // follow the box, so a badge keeps the proportions of the ones beside it
+  const fontSize = fontSizeOverride ?? scaledFontSize
 
   const measured = items.map((item) => {
     const icon = item.icon === undefined ? undefined : getIcon(item.icon)

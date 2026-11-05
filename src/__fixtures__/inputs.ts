@@ -111,6 +111,15 @@ export const TEST_FIXTURE_INPUTS = {
     font: 'times',
     bold: true,
   },
+  // text set larger than the box would give it, which leaves the icons and
+  // the padding where they were
+  'font-size': {
+    items: [{ icon: 'git-commit', value: '370' }, { value: 'bigger' }],
+    height: 30,
+    padY: 0,
+    font: 'arial',
+    fontSize: 24,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

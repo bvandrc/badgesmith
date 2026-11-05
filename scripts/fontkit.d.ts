@@ -4,7 +4,10 @@
  * its capitals are.
  */
 declare module 'fontkit' {
-  type Glyph = { advanceWidth: number }
+  type Glyph = {
+    advanceWidth: number
+    bbox: { minX: number; minY: number; maxX: number; maxY: number }
+  }
   type Font = {
     familyName: string
     unitsPerEm: number

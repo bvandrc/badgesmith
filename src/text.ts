@@ -33,6 +33,31 @@ export const fontFamily = (font: BadgeFont) => METRICS[font].family
 export const digitCapRatio = (font: BadgeFont) => METRICS[font].capRatio
 
 /**
+ * How much of its box the ink may take before the edges cut it.
+ *
+ * The outline extents the tables carry run a little under what a rasteriser
+ * actually paints — measured at up to 2.5% across these faces — so the limit
+ * is held back by more than that. It costs a caller a few percent of the
+ * largest text they could have set, and buys a guarantee that nothing asked
+ * for comes out clipped.
+ */
+const INK_SAFETY = 0.95
+
+/**
+ * The largest font size that fits `contentsHeight` without the box cutting it.
+ *
+ * Text is centred on its cap height, so the baseline sits `capRatio / 2` below
+ * the middle. What reaches past the edges from there is the ink above and
+ * below that baseline, and whichever end runs out first sets the limit.
+ */
+export const maxFontSize = (font: BadgeFont, contentsHeight: number) => {
+  const { capRatio, ink } = METRICS[font]
+  const overTop = 2 * ink.above - capRatio
+  const underBottom = capRatio + 2 * ink.below
+  return (contentsHeight / Math.max(overTop, underBottom)) * INK_SAFETY
+}
+
+/**
  * Width of `text` in `font` at `fontSize`, in px.
  *
  * SVG cannot measure text and GitHub's image proxy forbids external fonts, so

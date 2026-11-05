@@ -173,6 +173,25 @@ describe('parseStyle', () => {
     rejects(() => style('font='), message)
   })
 
+  test('reads fontSize, and refuses text its box would cut off', () => {
+    assert.deepEqual(style('height=30&padY=0&font=arial&fontSize=24'), {
+      height: 30,
+      padY: 0,
+      font: 'arial',
+      fontSize: 24,
+    })
+    // what fits depends on the face as well as the box, so the message names
+    // both rather than quoting one number for all of them
+    rejects(
+      () => style('height=20&padY=0&font=arial&fontSize=18'),
+      'fontSize must be at most 16.77 for arial in this box — raise height, or lower padY'
+    )
+    rejects(
+      () => style('height=20&padY=0&fontSize=18'),
+      'fontSize must be at most 15.84 for verdana in this box — raise height, or lower padY'
+    )
+  })
+
   test('reads iconScale, and will not let it pass 1', () => {
     assert.deepEqual(style('iconScale=0.7'), { iconScale: 0.7 })
     assert.deepEqual(style('iconScale=1'), { iconScale: 1 })

@@ -2,11 +2,115 @@
 
 Renders several icon/value pairs as a **single** SVG badge, on demand.
 
+[![370 commits, 264 pull requests](https://badgesmith.bvandrc.workers.dev/?items=git-commit:370,git-pull-request:264)](https://badgesmith.bvandrc.workers.dev/?items=git-commit:370,git-pull-request:264)
+
 ```
-https://badgesmith.<subdomain>.workers.dev/?items=git-commit:370,git-pull-request:264
+https://badgesmith.bvandrc.workers.dev/?items=git-commit:370,git-pull-request:264
 ```
 
-<img src="./sample.svg" alt="370 commits, 264 pull requests" height="18">
+Open [the worker](https://badgesmith.bvandrc.workers.dev) in a browser for a page of live examples.
+
+## Examples
+
+Every badge below is fetched live from the deployed worker — copy a URL, change the values, and use it as an image anywhere.
+
+**Live numbers for any public repo, looked up by the worker**
+
+[![Live numbers for any public repo, looked up by the worker](https://badgesmith.bvandrc.workers.dev/github?repo=bvandrc/badgesmith)](https://badgesmith.bvandrc.workers.dev/github?repo=bvandrc/badgesmith)
+
+```
+https://badgesmith.bvandrc.workers.dev/github?repo=bvandrc/badgesmith
+```
+
+**Your own colors, rounded corners**
+
+[![Your own colors, rounded corners](https://badgesmith.bvandrc.workers.dev/?items=star:1.2k,repo-forked:89,eye:42&color=1f6feb&iconColor=fff&radius=6)](https://badgesmith.bvandrc.workers.dev/?items=star:1.2k,repo-forked:89,eye:42&color=1f6feb&iconColor=fff&radius=6)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=star:1.2k,repo-forked:89,eye:42&color=1f6feb&iconColor=fff&radius=6
+```
+
+**Status and version, not just counts**
+
+[![Status and version, not just counts](https://badgesmith.bvandrc.workers.dev/?items=check-circle:passing,shield-check:A%2B,versions:v2.1.0&color=1a7f37&iconColor=fff)](https://badgesmith.bvandrc.workers.dev/?items=check-circle:passing,shield-check:A%2B,versions:v2.1.0&color=1a7f37&iconColor=fff)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=check-circle:passing,shield-check:A%2B,versions:v2.1.0&color=1a7f37&iconColor=fff
+```
+
+**A value with no icon reads as a label**
+
+[![A value with no icon reads as a label](https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&color=8250df&iconColor=fff)](https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&color=8250df&iconColor=fff)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&color=8250df&iconColor=fff
+```
+
+**Up to six items**
+
+[![Up to six items](https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&radius=4)](https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&radius=4)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&radius=4
+```
+
+**Bold values, fully rounded**
+
+[![Bold values, fully rounded](https://badgesmith.bvandrc.workers.dev/?items=flame:hot,zap:fast,rocket:shipped&color=bf3989&iconColor=fff&bold=true&radius=10)](https://badgesmith.bvandrc.workers.dev/?items=flame:hot,zap:fast,rocket:shipped&color=bf3989&iconColor=fff&bold=true&radius=10)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=flame:hot,zap:fast,rocket:shipped&color=bf3989&iconColor=fff&bold=true&radius=10
+```
+
+**Taller, as a pill**
+
+[![Taller, as a pill](https://badgesmith.bvandrc.workers.dev/?items=logo-github:49,tag:v2.1.0&height=28&radius=14)](https://badgesmith.bvandrc.workers.dev/?items=logo-github:49,tag:v2.1.0&height=28&radius=14)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=logo-github:49,tag:v2.1.0&height=28&radius=14
+```
+
+**Icons after their values**
+
+[![Icons after their values](https://badgesmith.bvandrc.workers.dev/?items=git-commit:370,git-pull-request:264&iconSide=right)](https://badgesmith.bvandrc.workers.dev/?items=git-commit:370,git-pull-request:264&iconSide=right)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=git-commit:370,git-pull-request:264&iconSide=right
+```
+
+**Light pill, dark text**
+
+[![Light pill, dark text](https://badgesmith.bvandrc.workers.dev/?items=clock:2h,calendar:Nov%202026&color=f6f8fa&textColor=1f2328&iconColor=59636e&radius=6)](https://badgesmith.bvandrc.workers.dev/?items=clock:2h,calendar:Nov%202026&color=f6f8fa&textColor=1f2328&iconColor=59636e&radius=6)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=clock:2h,calendar:Nov%202026&color=f6f8fa&textColor=1f2328&iconColor=59636e&radius=6
+```
+
+**No background — reads as a link**
+
+[![No background — reads as a link](https://badgesmith.bvandrc.workers.dev/?items=book:docs&bold=true&underline=true&color=none&textColor=0969da&iconColor=0969da&iconScale=0.7)](https://badgesmith.bvandrc.workers.dev/?items=book:docs&bold=true&underline=true&color=none&textColor=0969da&iconColor=0969da&iconScale=0.7)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=book:docs&bold=true&underline=true&color=none&textColor=0969da&iconColor=0969da&iconScale=0.7
+```
+
+**No background, compact, legible on light and dark themes**
+
+[![No background, compact, legible on light and dark themes](https://badgesmith.bvandrc.workers.dev/?items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=14&padY=0)](https://badgesmith.bvandrc.workers.dev/?items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=14&padY=0)
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=14&padY=0
+```
+
+In a README, use markdown or an `<img>` tag — the latter lets you align it:
+
+```md
+![commits and pull requests](https://badgesmith.bvandrc.workers.dev/github?repo=owner/name)
+```
+
+```html
+<img src="https://badgesmith.bvandrc.workers.dev/github?repo=owner/name" align="right" alt="commits and pull requests">
+```
 
 ## Why this exists
 

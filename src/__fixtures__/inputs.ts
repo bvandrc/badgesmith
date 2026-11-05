@@ -138,6 +138,19 @@ export const TEST_FIXTURE_INPUTS = {
       { value: 'ready' },
     ],
   },
+  // the same shapes drawn with brand marks, which are 24x24 where an octicon
+  // is 16x16, so this pins that they scale to the same box
+  'brand-icons': {
+    items: [
+      { icon: 'typescript' },
+      { icon: 'react', value: '19' },
+      { icon: 'cloudflareworkers' },
+    ],
+    color: 'none',
+    iconColor: '8B949E',
+    height: 20,
+    padY: 0,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

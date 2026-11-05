@@ -60,6 +60,8 @@ describe('fetch', () => {
     )
     assert.deepEqual(remote, [
       'https://primer.style/foundations/icons',
+      'https://simpleicons.org',
+      'https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts',
       'https://github.com/bvandrc/badgesmith',
     ])
   })

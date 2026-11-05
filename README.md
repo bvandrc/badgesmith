@@ -64,6 +64,22 @@ https://badgesmith.bvandrc.workers.dev/?items=rocket:shipped,%F0%9F%9A%80%20ship
 https://badgesmith.bvandrc.workers.dev/?items=shield-check:,law:MIT,tag:v2.1.0&color=1a7f37&iconColor=fff
 ```
 
+**Brand marks for what a project is built with**
+
+<a href="https://badgesmith.bvandrc.workers.dev/?items=typescript:5.9,react:19,vite:7&amp;color=1f2328&amp;iconColor=fff"><img src="https://badgesmith.bvandrc.workers.dev/?items=typescript:5.9,react:19,vite:7&amp;color=1f2328&amp;iconColor=fff" alt="Brand marks for what a project is built with"/></a>
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=typescript:5.9,react:19,vite:7&color=1f2328&iconColor=fff
+```
+
+**Brand marks with no values at all**
+
+<a href="https://badgesmith.bvandrc.workers.dev/?items=python:,postgresql:,docker:&amp;color=none&amp;iconColor=8B949E&amp;height=20&amp;padY=0"><img src="https://badgesmith.bvandrc.workers.dev/?items=python:,postgresql:,docker:&amp;color=none&amp;iconColor=8B949E&amp;height=20&amp;padY=0" alt="Brand marks with no values at all"/></a>
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=python:,postgresql:,docker:&color=none&iconColor=8B949E&height=20&padY=0
+```
+
 **Up to six items**
 
 <a href="https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&amp;radius=4"><img src="https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&amp;radius=4" alt="Up to six items"/></a>
@@ -210,7 +226,9 @@ Private repos aren't readable this way — pass their numbers to `/` instead.
 
 ### Icons
 
-Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of them, square or not.
+Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of them, square or not — plus 183 brand marks from [simple-icons](https://simpleicons.org) for languages and the tools built around them. Those are a curated set rather than the whole 3,467-icon catalogue, which would be 4.4MB of path data: the list is [scripts/simple-icon-slugs.ts](https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts). Where a slug belongs to both, the octicon keeps it. Something missing? [Open an issue](https://github.com/bvandrc/badgesmith/issues/new) asking for it, or a pull request adding its slug to [that file](https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts) — anything [simple-icons](https://simpleicons.org) has can go in.
+
+An item may be an icon on its own, written with a trailing colon — `items=react:`. It draws to the same box as the badges beside it, so it centres with them, which a bare `<img>` of the same mark cannot: an image sits on the line's baseline instead.
 
 An item may be an icon on its own, written with a trailing colon — `items=shield-check:`. It draws to the same box as the badges beside it, so it centres with them, which a bare `<img>` of the same mark cannot: an image sits on the line's baseline instead.
 

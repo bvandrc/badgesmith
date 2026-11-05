@@ -68,7 +68,7 @@ export const parseItems = (raw: string | null) => {
     }
     if (icon !== undefined && !hasIcon(icon)) {
       throw new BadRequestError(
-        `unknown icon "${icon}" — any octicon slug works, see https://primer.style/foundations/icons`
+        `unknown icon "${icon}" — any octicon slug works, plus the brand marks listed at https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts`
       )
     }
     if (value !== undefined && value.length > MAX_VALUE_LENGTH) {

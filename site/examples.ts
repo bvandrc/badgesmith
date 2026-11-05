@@ -43,6 +43,14 @@ export const EXAMPLES: readonly Example[] = [
     path: '/?items=shield-check:,law:MIT,tag:v2.1.0&color=1a7f37&iconColor=fff',
   },
   {
+    title: 'Brand marks for what a project is built with',
+    path: '/?items=typescript:5.9,react:19,vite:7&color=1f2328&iconColor=fff',
+  },
+  {
+    title: 'Brand marks with no values at all',
+    path: '/?items=python:,postgresql:,docker:&color=none&iconColor=8B949E&height=20&padY=0',
+  },
+  {
     title: 'Up to six items',
     path: '/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&radius=4',
   },

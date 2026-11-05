@@ -11,6 +11,7 @@
 
 import { readFileSync } from 'node:fs'
 
+import { WORKER_ORIGIN } from '../site/examples.ts'
 import {
   SAMPLE_INPUT,
   TEST_FIXTURE_INPUTS,
@@ -18,16 +19,11 @@ import {
 import { CONTENT_TYPES, HEADERS } from '../src/http.ts'
 import type { BadgeOptions } from '../src/render.ts'
 
-/**
- * The deployment this checks by default.
- *
- * Committed rather than configured: it is a public URL, embedded as an image
- * source wherever a badge is used, so hiding it in a repository variable buys
- * nothing and costs a setup step no clone or fork can see it needs.
- */
-const DEPLOYED_ORIGIN = 'https://badgesmith.bvandrc.workers.dev'
-
-const base = (process.env.BASE_URL || DEPLOYED_ORIGIN).replace(/\/+$/, '')
+// the README's own deployment by default. Committed rather than configured: it
+// is a public URL, embedded as an image source wherever a badge is used, so a
+// repository variable would buy nothing and cost a setup step no clone or fork
+// can see it needs
+const base = (process.env.BASE_URL || WORKER_ORIGIN).replace(/\/+$/, '')
 console.log(`# ${base}\n`)
 
 /** The query string that asks the route for what `options` renders directly. */

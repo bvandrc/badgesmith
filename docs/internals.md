@@ -18,6 +18,12 @@ The rendering core is generic and does no I/O. A provider is the only part that 
 
 Anything a provider reads from the environment goes on `Env` in `src/env.ts`, optional. A deployment configured with nothing still serves every route, so a provider that wants a secret has to cope with its absence rather than refuse to run.
 
+## The README and the landing page are generated
+
+Both come from Preact components in `site/`, and both show the examples in `site/examples.ts`, so a badge added there appears in each and the two cannot drift apart. `pnpm gen:pages` renders them: the README against the deployed worker, since GitHub fetches its images from there, and the landing page with root-relative paths, so each badge on it is rendered by whichever deployment served the page.
+
+The page is rendered at build time into `src/generated/usage-page.ts` rather than by the worker. Preact then stays a devDependency, and the runtime serves a constant string, as it does with the icon registry and the width table. The README is written in the same pass, as markdown with the rendered HTML interpolated, so its prose stays markdown while each badge is a component. CI runs `pnpm gen:all` and fails if either has drifted.
+
 ## Constraints worth knowing before changing the renderer
 
 GitHub proxies every README image through camo, which imposes three things:
@@ -60,6 +66,7 @@ pnpm gen:all     # every generator below, which is what CI checks
 pnpm gen:icons   # src/generated/icons.ts, from @primer/octicons
 pnpm gen:widths  # src/generated/text-widths.ts, from anafanafo
 pnpm gen:svg     # sample.svg and the test fixtures, from the renderer
+pnpm gen:pages   # README.md and src/generated/usage-page.ts, from site/
 pnpm check       # biome + tsc, no tests
 pnpm e2e         # hit a running worker: BASE_URL=http://localhost:8787 pnpm e2e
 pnpm deploy

@@ -1,8 +1,12 @@
 {
   "extends": "./tsconfig.json",
   "compilerOptions": {
-    "types": ["node"]
+    "types": ["node"],
+    // site/ renders the README and the landing page from Preact at build time,
+    // so JSX belongs to this node-typed program and never to the worker's
+    "jsx": "react-jsx",
+    "jsxImportSource": "preact"
   },
-  "include": ["src/**/*.test.ts", "scripts"],
+  "include": ["src/**/*.test.ts", "scripts", "site"],
   "exclude": []
 }

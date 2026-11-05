@@ -1,9 +1,9 @@
 import type { Env } from './env.ts'
+import { USAGE_PAGE } from './generated/usage-page.ts'
 import { BadRequestError, CONTENT_TYPES, HEADERS } from './http.ts'
 import { findProvider } from './providers/registry.ts'
 import { parseItems, parseStyle } from './query-params.ts'
 import { type BadgeItem, renderBadge } from './render.ts'
-import { usagePage } from './usage-page.ts'
 
 /**
  * How long an explicit-value badge may be cached: a week.
@@ -76,7 +76,7 @@ const handle = async (request: Request, env: Env, ctx: WaitUntil) => {
       // landing page. Any query at all means a badge was intended, and a bad
       // one earns the 400 rather than a page that looks like success.
       if ([...url.searchParams].length === 0) {
-        return htmlResponse(usagePage(url.origin), PAGE_CACHE_SECONDS)
+        return htmlResponse(USAGE_PAGE, PAGE_CACHE_SECONDS)
       }
       const items = parseItems(url.searchParams.get('items'))
       return svgResponse(renderBadge({ ...style, items }), STATIC_CACHE_SECONDS)

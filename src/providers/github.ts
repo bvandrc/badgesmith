@@ -30,7 +30,7 @@ const fetchRepoCounts = async (
   token?: string
 ): Promise<RepoCounts> => {
   const headers: Record<string, string> = {
-    [HEADERS.USER_AGENT]: 'multi-icon-badge',
+    [HEADERS.USER_AGENT]: 'badgesmith',
     [HEADERS.ACCEPT]: CONTENT_TYPES.GITHUB_JSON,
   }
   if (token) {

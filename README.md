@@ -1,9 +1,9 @@
-# multi-icon-badge
+# badgesmith
 
 Renders several icon/value pairs as a **single** SVG badge, on demand.
 
 ```
-https://multi-icon-badge.<subdomain>.workers.dev/?items=git-commit:370,git-pull-request:264
+https://badgesmith.<subdomain>.workers.dev/?items=git-commit:370,git-pull-request:264
 ```
 
 <img src="./sample.svg" alt="370 commits, 264 pull requests" height="18">

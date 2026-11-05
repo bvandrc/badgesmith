@@ -25,7 +25,7 @@ import type { BadgeOptions } from '../src/render.ts'
  * source wherever a badge is used, so hiding it in a repository variable buys
  * nothing and costs a setup step no clone or fork can see it needs.
  */
-const DEPLOYED_ORIGIN = 'https://multi-icon-badge.bvandrc.workers.dev'
+const DEPLOYED_ORIGIN = 'https://badgesmith.bvandrc.workers.dev'
 
 const base = (process.env.BASE_URL || DEPLOYED_ORIGIN).replace(/\/+$/, '')
 console.log(`# ${base}\n`)
@@ -120,7 +120,7 @@ for (const { name, options, file } of pinned) {
 // that do not change: which icons, in which order, each holding a count or the
 // placeholder a failed lookup leaves behind.
 {
-  const res = await fetch(`${base}/github?repo=bvandrc/multi-icon-badge`)
+  const res = await fetch(`${base}/github?repo=bvandrc/badgesmith`)
   const body = await res.text()
   // `${value} ${slug}` per item, joined with ', ' — see renderBadge
   const pairs = (body.match(/aria-label="([^"]*)"/)?.[1] ?? '')

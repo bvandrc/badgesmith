@@ -16,10 +16,11 @@ import {
   BASE_HEIGHT,
   type BadgeItem,
   type BadgeStyle,
+  contentsHeight,
   ICON_SIDES,
   TRANSPARENT,
 } from './render.ts'
-import { BADGE_FONTS } from './text.ts'
+import { BADGE_FONTS, maxFontSize } from './text.ts'
 
 // ******************************************************************************
 // parseItems
@@ -143,6 +144,7 @@ const styleSchema = zObject({
   font: zOptional(
     zEnum(BADGE_FONTS, { error: `must be one of ${BADGE_FONTS.join(', ')}` })
   ),
+  fontSize: zOptional(zBoundedParam(4, 64)),
 })
 
 /**
@@ -162,6 +164,18 @@ export const parseStyle = (params: URLSearchParams): BadgeStyle => {
       throw new BadRequestError(
         `padY must be under half of height (${height / 2})`
       )
+    }
+    const { fontSize, font = 'verdana' } = parsed.data
+    // text larger than its box would be cut off by the badge's own edges, so
+    // it is refused rather than drawn clipped. What fits depends on the face
+    // and on the room the padding leaves, neither of which one field can see.
+    if (fontSize !== undefined) {
+      const max = maxFontSize(font, contentsHeight(parsed.data))
+      if (fontSize > max) {
+        throw new BadRequestError(
+          `fontSize must be at most ${Math.floor(max * 100) / 100} for ${font} in this box — raise height, or lower padY`
+        )
+      }
     }
     return parsed.data
   }

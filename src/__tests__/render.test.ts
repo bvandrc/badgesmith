@@ -253,6 +253,24 @@ describe('renderBadge', () => {
     assert.ok(times > BASE_HEIGHT / 2, 'baseline should stay below the middle')
   })
 
+  test('fontSize sets the text alone, leaving the box and its icons', () => {
+    const items = [{ icon: 'star', value: 'abc' }]
+    const base = renderBadge({ items, height: 30, padY: 0 })
+    const bigger = renderBadge({ items, height: 30, padY: 0, fontSize: 24 })
+
+    const sizeOf = (svg: string) =>
+      Number(svg.match(/font-size="([\d.]+)"/)?.[1])
+    assert.equal(sizeOf(bigger), 24)
+    assert.ok(sizeOf(base) < 24, 'the box would otherwise set a smaller size')
+
+    // the icon follows the box, not the text, so a badge keeps the
+    // proportions of the ones it sits beside
+    const iconOf = (svg: string) => svg.match(/scale\(([\d.]+)\)/)?.[1]
+    assert.equal(iconOf(bigger), iconOf(base))
+    // larger text needs more room, so the pill grows with it
+    assert.ok(widthOf(bigger) > widthOf(base))
+  })
+
   test('escapes values rather than emitting raw markup', () => {
     const svg = renderBadge({ items: [{ icon: 'tag', value: '<b>&"' }] })
     assert.doesNotMatch(svg, /<b>/)

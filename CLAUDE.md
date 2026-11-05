@@ -26,9 +26,10 @@ Conventions live outside this file, synced from https://github.com/bvandrc/bvand
 - @conventions/typescript.md — language-level TypeScript/JavaScript rules
 - @conventions/ts-testing-all.md — practice for any TypeScript test suite
 - @conventions/ts-unit-testing.md — unit test layout and placement
+- @conventions/react.md — component and JSX rules (the components in `site/` are Preact, same rules apply)
 - @conventions/all.md — practice for every repo: branches, formatting, writing, PR reviews
 
-`react.md`, `playwright.md`, and `npm-publishing.md` exist upstream but are deliberately not synced here: there is no React, no Playwright suite, and this is a Worker rather than a published package.
+`playwright.md` and `npm-publishing.md` exist upstream but are deliberately not synced here: there is no Playwright suite, and this is a Worker rather than a published package.
 
 ## Commands
 

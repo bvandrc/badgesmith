@@ -31,7 +31,7 @@ const escapeHtml = (text: string) =>
 export const usagePage = (origin: string) => {
   const examples = EXAMPLES.map((query) => {
     const path = `/?${query}`
-    return `<li><a href="${escapeHtml(path)}"><img src="${escapeHtml(`${origin}${path}`)}" alt="example badge"></a><code>${escapeHtml(path)}</code></li>`
+    return `<tr><td><a href="${escapeHtml(path)}"><img src="${escapeHtml(`${origin}${path}`)}" alt="example badge"></a></td><td><code>${escapeHtml(path)}</code></td></tr>`
   }).join('')
 
   return `<!doctype html>
@@ -40,17 +40,19 @@ export const usagePage = (origin: string) => {
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>badgesmith</title>
 <style>
-:root { color-scheme: light dark; --fg: #1f2328; --bg: #fff; --muted: #59636e; --line: #d1d9e0; }
+:root { color-scheme: light dark; --fg: #1f2328; --bg: #fff; --muted: #59636e; }
 @media (prefers-color-scheme: dark) {
-  :root { --fg: #f0f6fc; --bg: #0d1117; --muted: #9198a1; --line: #3d444d; }
+  :root { --fg: #f0f6fc; --bg: #0d1117; --muted: #9198a1; }
 }
 body { margin: 0 auto; padding: 2rem 1rem; max-width: 46rem; background: var(--bg); color: var(--fg);
   font: 16px/1.6 -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif; }
 h1 { font-size: 1.5rem; margin: 0 0 .25rem; }
 p { color: var(--muted); margin: 0 0 1.5rem; }
-ul { list-style: none; margin: 0; padding: 0; }
-li { padding: 1rem 0; border-top: 1px solid var(--line); }
-li img { display: block; margin-bottom: .6rem; }
+table { border-collapse: collapse; }
+td { padding: .6rem 0; vertical-align: middle; }
+/* the badge column takes only what its widest badge needs; the URL wraps */
+td:first-child { padding-right: 1.5rem; white-space: nowrap; }
+td img { display: block; }
 code { font-size: .8125rem; color: var(--muted); word-break: break-all; }
 a { color: inherit; }
 footer { margin-top: 2rem; font-size: .875rem; }
@@ -58,7 +60,7 @@ footer { margin-top: 2rem; font-size: .875rem; }
 <h1>badgesmith</h1>
 <p>Several icon/value pairs as a single SVG badge. Any
 <a href="https://primer.style/foundations/icons">octicon</a> slug works.</p>
-<ul>${examples}</ul>
+<table>${examples}</table>
 <footer><a href="${REPO_URL}">Parameter reference and source &rarr;</a></footer>
 </html>
 `

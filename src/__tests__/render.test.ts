@@ -122,6 +122,25 @@ describe('renderBadge', () => {
     assert.deepEqual(trimmed, full)
   })
 
+  test('iconSide=right swaps the pair without resizing the badge', () => {
+    const items = [
+      { icon: 'star', value: '12' },
+      { icon: 'tag', value: 'v1' },
+    ]
+    const left = renderBadge({ items })
+    const right = renderBadge({ items, iconSide: 'right' })
+
+    const order = (svg: string) =>
+      [...svg.matchAll(/<(g|text)\b/g)].map((m) => m[1]).join(' ')
+    assert.equal(order(left), 'g text g text')
+    assert.equal(order(right), 'text g text g')
+
+    // the pair occupies the same run either way, so the box cannot move.
+    // Only the boundary inside the pair does, since an icon and its value
+    // are not the same width.
+    assert.equal(widthOf(right), widthOf(left))
+  })
+
   test('escapes values rather than emitting raw markup', () => {
     const svg = renderBadge({ items: [{ icon: 'tag', value: '<b>&"' }] })
     assert.doesNotMatch(svg, /<b>/)

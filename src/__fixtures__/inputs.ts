@@ -70,6 +70,14 @@ export const TEST_FIXTURE_INPUTS = {
     height: 14,
     padY: 0,
   },
+  // each icon drawn after its own value instead of before it
+  'icon-right': {
+    items: [
+      { icon: 'git-commit', value: '370' },
+      { icon: 'git-pull-request', value: '264' },
+    ],
+    iconSide: 'right',
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

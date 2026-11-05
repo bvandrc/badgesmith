@@ -1,4 +1,5 @@
 import {
+  enum as zEnum,
   maximum as zMaximum,
   minimum as zMinimum,
   object as zObject,
@@ -15,6 +16,7 @@ import {
   BASE_HEIGHT,
   type BadgeItem,
   type BadgeStyle,
+  ICON_SIDES,
   TRANSPARENT,
 } from './render.ts'
 
@@ -114,6 +116,9 @@ const styleSchema = zObject({
   // under 12 the text no longer fits the pill it is centred in
   height: zOptional(zBoundedParam(12, 64)),
   padY: zOptional(zBoundedParam(0, 32)),
+  iconSide: zOptional(
+    zEnum(ICON_SIDES, { error: `must be ${ICON_SIDES.join(' or ')}` })
+  ),
   radius: zOptional(zBoundedParam(0, 32)),
 })
 

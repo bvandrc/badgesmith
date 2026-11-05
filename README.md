@@ -202,6 +202,8 @@ Private repos aren't readable this way — pass their numbers to `/` instead.
 
 ### Icons
 
-Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of them, square or not.
+Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of them, square or not — plus 183 brand marks from [simple-icons](https://simpleicons.org) for languages and the tools built around them. Those are a curated set rather than the whole 3,467-icon catalogue, which would be 4.4MB of path data: the list is [scripts/simple-icon-slugs.ts](https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts). Where a slug belongs to both, the octicon keeps it.
+
+An item may be an icon on its own, written with a trailing colon — `items=react:`. It draws to the same box as the badges beside it, so it centres with them, which a bare `<img>` of the same mark cannot: an image sits on the line's baseline instead.
 
 Internals — why the icon registry and the width table are generated, the constraints the renderer works under, and the development commands — are in [docs/internals.md](./docs/internals.md).

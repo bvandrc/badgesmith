@@ -56,25 +56,29 @@ export const parseItems = (raw: string | null) => {
     // `extra` catches a second colon, so `a:b:c` is rejected rather than
     // quietly read as the value `b:c`
     const [head, tail, ...extra] = part.split(':')
-    // no colon at all is a value on its own, which draws without an icon
-    const [icon, value] = tail === undefined ? [undefined, head] : [head, tail]
-    // an empty icon is a stray leading colon, not a value on its own
-    if (!value || icon === '' || extra.length > 0) {
+    // no colon at all is a value on its own; a trailing one is an icon on its
+    // own, which is how a badge stands in for a bare image
+    const [icon, value] =
+      tail === undefined ? [undefined, head] : [head, tail || undefined]
+    // a leading colon leaves no icon before it, and an empty part neither
+    if (icon === '' || (!icon && !value) || extra.length > 0) {
       throw new BadRequestError(
-        `malformed item "${part}" — expected icon:value, or value alone`
+        `malformed item "${part}" — expected icon:value, icon: alone, or value alone`
       )
     }
     if (icon !== undefined && !hasIcon(icon)) {
       throw new BadRequestError(
-        `unknown icon "${icon}" — any octicon slug works, see https://primer.style/foundations/icons`
+        `unknown icon "${icon}" — any octicon slug works, plus the brand marks listed at https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts`
       )
     }
-    if (value.length > MAX_VALUE_LENGTH) {
+    if (value !== undefined && value.length > MAX_VALUE_LENGTH) {
       throw new BadRequestError(
         `value for "${icon ?? value}" must be at most ${MAX_VALUE_LENGTH} characters`
       )
     }
-    items.push(icon === undefined ? { value } : { icon, value })
+    items.push(
+      icon === undefined ? { value: value as string } : { icon, value }
+    )
   }
   return items
 }

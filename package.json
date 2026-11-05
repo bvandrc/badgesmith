@@ -50,6 +50,7 @@
     "fontkit": "^2",
     "preact": "^11",
     "preact-render-to-string": "^6",
+    "simple-icons": "^16",
     "tsx": "^4",
     "type-fest": "^5",
     "typescript": "^7",

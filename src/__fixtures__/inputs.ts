@@ -129,6 +129,19 @@ export const TEST_FIXTURE_INPUTS = {
     font: 'arial',
     fontSize: 20,
   },
+  // a brand mark from simple-icons, on its own and beside a value. An icon
+  // with no value takes no gap after it, and its slug is what the badge reads
+  'brand-icons': {
+    items: [
+      { icon: 'typescript' },
+      { icon: 'react', value: '19' },
+      { icon: 'cloudflareworkers' },
+    ],
+    color: 'none',
+    iconColor: '8B949E',
+    height: 20,
+    padY: 0,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

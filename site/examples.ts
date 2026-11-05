@@ -34,6 +34,11 @@ export const EXAMPLES: readonly Example[] = [
     path: '/?items=stable,tag:v2.1.0,law:MIT&color=8250df&iconColor=fff',
   },
   {
+    title:
+      'The same mark as an icon and as an emoji — an emoji is text, so it keeps its own colours',
+    path: '/?items=rocket:shipped,%F0%9F%9A%80%20shipped&color=1f6feb&iconColor=fff',
+  },
+  {
     title: 'Up to six items',
     path: '/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&radius=4',
   },

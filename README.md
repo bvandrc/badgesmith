@@ -48,6 +48,14 @@ https://badgesmith.bvandrc.workers.dev/?items=check-circle:passing,shield-check:
 https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&color=8250df&iconColor=fff
 ```
 
+**The same mark as an icon and as an emoji — an emoji is text, so it keeps its own colours**
+
+<a href="https://badgesmith.bvandrc.workers.dev/?items=rocket:shipped,%F0%9F%9A%80%20shipped&amp;color=1f6feb&amp;iconColor=fff"><img src="https://badgesmith.bvandrc.workers.dev/?items=rocket:shipped,%F0%9F%9A%80%20shipped&amp;color=1f6feb&amp;iconColor=fff" alt="The same mark as an icon and as an emoji — an emoji is text, so it keeps its own colours"/></a>
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=rocket:shipped,%F0%9F%9A%80%20shipped&color=1f6feb&iconColor=fff
+```
+
 **Up to six items**
 
 <a href="https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&amp;radius=4"><img src="https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&amp;radius=4" alt="Up to six items"/></a>
@@ -159,6 +167,8 @@ Opening the root with no query returns an HTML page of the same examples as abov
 `underline=true` draws a line under every value, which costs no width: an underline does not change what a glyph advances by, so the measured text stays the right size. It is a presentation attribute rather than CSS, so GitHub's image proxy serves it intact.
 
 `font` picks the face every value is drawn in. Only families a reader already has, since the proxy serving these SVGs forbids fetching a font — and only ones whose advance widths are known, because the pill has to be sized before it is drawn. Each face is measured against its own metrics and centred on its own cap height, so the text fits and sits level whichever is chosen. The stacks name a metric-compatible clone after the family itself (`Arial,Liberation Sans,Helvetica,sans-serif`), so a reader without the family still gets the widths the table holds.
+
+Values may carry emoji. They are drawn from the reader's own emoji font, which keeps their colour — a `textColor` does not flatten them — and they are measured by grapheme, so one carrying a variation selector, a flag, or a joined sequence takes a single advance rather than one per code point.
 
 `fontSize` sets the text size directly, instead of letting the box set it. By default the text scales with the room `padY` leaves, which ties how large it reads to how tall the badge is — and the height is what badges align by, since an image sits on the line's baseline and a badge centres its contents, so equal heights put equal centres. Setting `fontSize` decouples the two: a badge can hold larger text and still line up with the ones beside it. Only the text moves; the icons, the end padding and the gaps still follow the box.
 

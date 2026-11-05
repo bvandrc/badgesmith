@@ -120,6 +120,15 @@ export const TEST_FIXTURE_INPUTS = {
     font: 'arial',
     fontSize: 24,
   },
+  // emoji, which the reader's own font draws: one advance each however many
+  // code points they are built from — a variation selector, a joined pair
+  emoji: {
+    items: [{ value: '🖥️ Core Development' }, { icon: 'star', value: '👨‍💻' }],
+    height: 24,
+    padY: 0,
+    font: 'arial',
+    fontSize: 20,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

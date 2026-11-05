@@ -58,12 +58,45 @@ export const maxFontSize = (font: BadgeFont, contentsHeight: number) => {
 }
 
 /**
+ * How far an emoji advances, as a fraction of the font size.
+ *
+ * Every emoji advances the same: measured at 1.248 across flags, joined
+ * sequences and the rest, and identical whichever of these faces is asked
+ * for, since none of them has emoji and they all fall through to the one the
+ * reader's system provides.
+ *
+ * Rounded up from that, because which font that is depends on the platform
+ * and the measurement can only be taken on one of them. Measuring an emoji
+ * short would leave the badge too narrow and clip the end of its text, while
+ * measuring it long only leaves a little room spare.
+ */
+const EMOJI_ADVANCE = 1.3
+
+/**
+ * Whether a grapheme is drawn from the reader's emoji font.
+ *
+ * Regional indicators are the flags, which are not pictographic themselves —
+ * a flag is a pair of them, which the segmenter has already joined up.
+ */
+const isEmoji = (grapheme: string) =>
+  /\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(grapheme)
+
+/** Splits text the way it is drawn: one unit per mark the reader sees. */
+const graphemes = (text: string) =>
+  [...new Intl.Segmenter().segment(text)].map((entry) => entry.segment)
+
+/**
  * Width of `text` in `font` at `fontSize`, in px.
  *
  * SVG cannot measure text and GitHub's image proxy forbids external fonts, so
  * the width has to be computed up front. A character the table does not cover
  * is measured as the widest one it does, so the pill is never too small for
  * its contents.
+ *
+ * Counted by grapheme rather than by code point, because what the reader sees
+ * as one mark advances once however many code points it is built from — an
+ * emoji carrying a variation selector would otherwise be measured twice, and
+ * a flag or a joined sequence several times over.
  *
  * `bold` measures against the bold face, whose glyphs advance further than
  * the regular one's — measuring a bold value against regular metrics would
@@ -76,7 +109,13 @@ export const textWidth = (
 ) => {
   const widths = METRICS[font][bold ? 'bold' : 'normal']
   return (
-    sumBy([...text], (char) => widths.chars[char] ?? widths.fallback) *
+    sumBy(graphemes(text), (grapheme) =>
+      // the emoji figure is a fraction of the font size, so it is expressed
+      // against the size this table was measured at and scaled with the rest
+      isEmoji(grapheme)
+        ? EMOJI_ADVANCE * widths.fontSize
+        : (widths.chars[grapheme] ?? widths.fallback)
+    ) *
     (fontSize / widths.fontSize)
   )
 }

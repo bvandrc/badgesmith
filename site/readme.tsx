@@ -79,6 +79,8 @@ Opening the root with no query returns an HTML page of the same examples as abov
 
 \`font\` picks the face every value is drawn in. Only families a reader already has, since the proxy serving these SVGs forbids fetching a font — and only ones whose advance widths are known, because the pill has to be sized before it is drawn. Each face is measured against its own metrics and centred on its own cap height, so the text fits and sits level whichever is chosen. The stacks name a metric-compatible clone after the family itself (\`Arial,Liberation Sans,Helvetica,sans-serif\`), so a reader without the family still gets the widths the table holds.
 
+Values may carry emoji. They are drawn from the reader's own emoji font, which keeps their colour — a \`textColor\` does not flatten them — and they are measured by grapheme, so one carrying a variation selector, a flag, or a joined sequence takes a single advance rather than one per code point.
+
 \`fontSize\` sets the text size directly, instead of letting the box set it. By default the text scales with the room \`padY\` leaves, which ties how large it reads to how tall the badge is — and the height is what badges align by, since an image sits on the line's baseline and a badge centres its contents, so equal heights put equal centres. Setting \`fontSize\` decouples the two: a badge can hold larger text and still line up with the ones beside it. Only the text moves; the icons, the end padding and the gaps still follow the box.
 
 Text too large for its box is refused rather than drawn clipped. The limit depends on the face as well as the room the padding leaves, and the error names it.

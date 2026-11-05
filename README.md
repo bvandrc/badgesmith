@@ -56,6 +56,14 @@ https://badgesmith.bvandrc.workers.dev/?items=stable,tag:v2.1.0,law:MIT&color=82
 https://badgesmith.bvandrc.workers.dev/?items=rocket:shipped,%F0%9F%9A%80%20shipped&color=1f6feb&iconColor=fff
 ```
 
+**An icon on its own, written with a trailing colon**
+
+<a href="https://badgesmith.bvandrc.workers.dev/?items=shield-check:,law:MIT,tag:v2.1.0&amp;color=1a7f37&amp;iconColor=fff"><img src="https://badgesmith.bvandrc.workers.dev/?items=shield-check:,law:MIT,tag:v2.1.0&amp;color=1a7f37&amp;iconColor=fff" alt="An icon on its own, written with a trailing colon"/></a>
+
+```
+https://badgesmith.bvandrc.workers.dev/?items=shield-check:,law:MIT,tag:v2.1.0&color=1a7f37&iconColor=fff
+```
+
 **Up to six items**
 
 <a href="https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&amp;radius=4"><img src="https://badgesmith.bvandrc.workers.dev/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&amp;radius=4" alt="Up to six items"/></a>
@@ -203,5 +211,7 @@ Private repos aren't readable this way — pass their numbers to `/` instead.
 ### Icons
 
 Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of them, square or not.
+
+An item may be an icon on its own, written with a trailing colon — `items=shield-check:`. It draws to the same box as the badges beside it, so it centres with them, which a bare `<img>` of the same mark cannot: an image sits on the line's baseline instead.
 
 Internals — why the icon registry and the width table are generated, the constraints the renderer works under, and the development commands — are in [docs/internals.md](./docs/internals.md).

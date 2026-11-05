@@ -113,5 +113,7 @@ Private repos aren't readable this way — pass their numbers to \`/\` instead.
 
 Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of them, square or not.
 
+An item may be an icon on its own, written with a trailing colon — \`items=shield-check:\`. It draws to the same box as the badges beside it, so it centres with them, which a bare \`<img>\` of the same mark cannot: an image sits on the line's baseline instead.
+
 Internals — why the icon registry and the width table are generated, the constraints the renderer works under, and the development commands — are in [docs/internals.md](./docs/internals.md).
 `

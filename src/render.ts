@@ -3,8 +3,16 @@ import { mapValues, sumBy } from 'es-toolkit'
 import { getIcon } from './icons.ts'
 import { type BadgeFont, digitCapRatio, fontFamily, textWidth } from './text.ts'
 
-/** One pair the badge holds. Without an `icon` it is the value alone. */
-export type BadgeItem = { icon?: string; value: string }
+/**
+ * One thing the badge holds: an icon and its value, or either on its own.
+ *
+ * An icon alone is how a badge stands in for a bare image — drawn to the same
+ * box as the badges beside it, so it centres with them rather than sitting on
+ * the line's baseline as an `<img>` would.
+ */
+export type BadgeItem =
+  | { icon: string; value?: string }
+  | { icon?: string; value: string }
 
 /** The sides an icon may sit on, relative to its own value. */
 export const ICON_SIDES = ['left', 'right'] as const
@@ -220,16 +228,23 @@ export const renderBadge = ({
       drawScale,
       iconWidth: icon ? icon.width * drawScale : 0,
       iconHeight: icon ? icon.height * drawScale : 0,
-      valueWidth: textWidth(item.value, fontSize, { font, bold }),
+      valueWidth:
+        item.value === undefined
+          ? 0
+          : textWidth(item.value, fontSize, { font, bold }),
     }
   })
 
   const width =
     endPad * 2 +
-    // a value with no icon takes neither the icon's width nor the gap after it
+    // the gap between an icon and its value belongs to neither on its own, so
+    // an item missing either takes only what it has
     sumBy(
       measured,
-      (m) => m.iconWidth + (m.path ? iconGap : 0) + m.valueWidth
+      (m) =>
+        m.iconWidth +
+        (m.path && m.value !== undefined ? iconGap : 0) +
+        m.valueWidth
     ) +
     itemGap * Math.max(measured.length - 1, 0)
 
@@ -239,13 +254,20 @@ export const renderBadge = ({
   for (const m of measured) {
     const icon = (at: number) =>
       `<g fill="#${iconColor}" transform="translate(${round(at)} ${round((height - m.iconHeight) / 2)}) scale(${round(m.drawScale)})">${m.path}</g>`
+    // only ever called for an item that has one; the fallback is for the
+    // compiler, which cannot see that from here
     const value = (at: number) =>
-      `<text x="${round(at)}" y="${baseline}" font-family="${fontFamily(font)}" font-size="${round(fontSize)}" fill="#${textColor}"${bold ? ' font-weight="bold"' : ''}${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value)}</text>`
+      `<text x="${round(at)}" y="${baseline}" font-family="${fontFamily(font)}" font-size="${round(fontSize)}" fill="#${textColor}"${bold ? ' font-weight="bold"' : ''}${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value ?? '')}</text>`
 
-    // a value on its own is drawn where the pair would have started
+    // either on its own is drawn where the pair would have started
     if (!m.path) {
       parts.push(value(x))
       x += m.valueWidth + itemGap
+      continue
+    }
+    if (m.value === undefined) {
+      parts.push(icon(x))
+      x += m.iconWidth + itemGap
       continue
     }
     // the pair occupies the same run either way, so only what is drawn at
@@ -264,7 +286,13 @@ export const renderBadge = ({
   // reads as "19 git-commit" whichever side the icon is drawn on: the label
   // is what the badge says, not how it is laid out
   const label = measured
-    .map((m) => (m.slug === undefined ? m.value : `${m.value} ${m.slug}`))
+    .map((m) =>
+      m.slug === undefined
+        ? m.value
+        : m.value === undefined
+          ? m.slug
+          : `${m.value} ${m.slug}`
+    )
     .join(', ')
   // dropped entirely rather than drawn with fill="none", so a transparent
   // badge carries no element whose only effect would be on its own bounds

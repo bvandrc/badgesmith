@@ -298,6 +298,28 @@ describe('renderBadge', () => {
     )
   })
 
+  test('an icon with no value takes no room for text, nor the gap', () => {
+    const icon = getIcon('star')
+    const alone = renderBadge({ items: [{ icon: 'star' }] })
+    const paired = renderBadge({ items: [{ icon: 'star', value: '9' }] })
+
+    // the icon is drawn, and nothing else is
+    assert.match(alone, /<g fill=/)
+    assert.doesNotMatch(alone, /<text/)
+    // and the badge is only as wide as the icon plus the pill's own ends
+    const scale = BASE_HEIGHT / 20
+    assert.equal(
+      widthOf(alone),
+      round(6 * scale * 2 + (icon.width * (14 * scale)) / icon.height)
+    )
+    assert.ok(
+      widthOf(alone) < widthOf(paired),
+      'a value and the gap before it should both cost width'
+    )
+    // and the badge reads as the icon it shows
+    assert.match(alone, /aria-label="star"/)
+  })
+
   test('escapes values rather than emitting raw markup', () => {
     const svg = renderBadge({ items: [{ icon: 'tag', value: '<b>&"' }] })
     assert.doesNotMatch(svg, /<b>/)

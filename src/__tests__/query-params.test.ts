@@ -50,11 +50,25 @@ describe('parseItems', () => {
     assert.equal(parseItems(seven.split(',').slice(0, 6).join(',')).length, 6)
   })
 
+  test('reads an icon on its own, written with a trailing colon', () => {
+    assert.deepEqual(parseItems('star:'), [{ icon: 'star', value: undefined }])
+    // beside the other two forms, which still mean what they did
+    assert.deepEqual(parseItems('star:1,repo,eye:2'), [
+      { icon: 'star', value: '1' },
+      { value: 'repo' },
+      { icon: 'eye', value: '2' },
+    ])
+    // the icon still has to be one
+    rejects(() => parseItems('nope:'), 'unknown icon "nope"')
+  })
+
   test('rejects a malformed item, including a stray second colon', () => {
-    for (const raw of ['star:', ':12', 'star:1:2']) {
+    // a trailing colon is an icon on its own, so what is left is a leading
+    // one, which names no icon, and a second colon, which names nothing
+    for (const raw of [':12', ':', 'star:1:2']) {
       rejects(
         () => parseItems(raw),
-        `malformed item "${raw}" — expected icon:value, or value alone`
+        `malformed item "${raw}" — expected icon:value, icon: alone, or value alone`
       )
     }
   })

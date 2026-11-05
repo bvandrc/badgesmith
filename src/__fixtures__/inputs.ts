@@ -60,6 +60,16 @@ export const TEST_FIXTURE_INPUTS = {
     textColor: '6E7681',
     height: 12,
   },
+  // no padding above or below: the contents keep the size the default
+  // proportions give them and the pill shrinks to meet them
+  'trimmed-padding': {
+    items: [
+      { icon: 'git-commit', value: '87' },
+      { icon: 'git-pull-request', value: '44' },
+    ],
+    height: 14,
+    padY: 0,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

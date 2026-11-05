@@ -11,7 +11,12 @@ import {
 
 import { BadRequestError } from './http.ts'
 import { hasIcon } from './icons.ts'
-import { type BadgeItem, type BadgeStyle, TRANSPARENT } from './render.ts'
+import {
+  BASE_HEIGHT,
+  type BadgeItem,
+  type BadgeStyle,
+  TRANSPARENT,
+} from './render.ts'
 
 // ******************************************************************************
 // parseItems
@@ -108,6 +113,7 @@ const styleSchema = zObject({
   textColor: zOptional(zHex),
   // under 12 the text no longer fits the pill it is centred in
   height: zOptional(zBoundedParam(12, 64)),
+  padY: zOptional(zBoundedParam(0, 32)),
   radius: zOptional(zBoundedParam(0, 32)),
 })
 
@@ -120,6 +126,15 @@ const styleSchema = zObject({
 export const parseStyle = (params: URLSearchParams): BadgeStyle => {
   const parsed = styleSchema.safeParse(Object.fromEntries(params))
   if (parsed.success) {
+    const { padY, height = BASE_HEIGHT } = parsed.data
+    // padding is bounded by the box it sits in, which one field cannot see
+    // of the other — left to the renderer it would scale the contents to
+    // nothing or past zero
+    if (padY !== undefined && padY * 2 >= height) {
+      throw new BadRequestError(
+        `padY must be under half of height (${height / 2})`
+      )
+    }
     return parsed.data
   }
   const [issue] = parsed.error.issues

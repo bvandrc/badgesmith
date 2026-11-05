@@ -11,7 +11,7 @@ const EXAMPLES = [
   'items=git-commit:370,git-pull-request:264',
   'items=star:1.2k,repo-forked:89&color=1f6feb&iconColor=fff&height=24&radius=6',
   'items=logo-github:49,tag:v2.1.0&radius=10',
-  'items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=12',
+  'items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=14&padY=0',
 ] as const
 
 const escapeHtml = (text: string) =>

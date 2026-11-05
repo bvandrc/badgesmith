@@ -78,6 +78,11 @@ export const TEST_FIXTURE_INPUTS = {
     ],
     iconSide: 'right',
   },
+  // a value on its own, beside a pair, so the fixture pins both forms and
+  // the gap the icon-less one does not take
+  'text-only': {
+    items: [{ value: 'repo' }, { icon: 'star', value: '9' }],
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

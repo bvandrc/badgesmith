@@ -3,7 +3,8 @@ import { mapValues, sumBy } from 'es-toolkit'
 import { getIcon } from './icons.ts'
 import { textWidth } from './text.ts'
 
-export type BadgeItem = { icon: string; value: string }
+/** One pair the badge holds. Without an `icon` it is the value alone. */
+export type BadgeItem = { icon?: string; value: string }
 
 /** The sides an icon may sit on, relative to its own value. */
 export const ICON_SIDES = ['left', 'right'] as const
@@ -141,23 +142,27 @@ export const renderBadge = ({
   )
 
   const measured = items.map((item) => {
-    const icon = getIcon(item.icon)
+    const icon = item.icon === undefined ? undefined : getIcon(item.icon)
     // octicons are not all square — scale by height and let width follow, so a
     // wide one (logo-github is 49x16) renders undistorted and advances further
-    const iconScale = iconSize / icon.height
+    const iconScale = icon ? iconSize / icon.height : 0
     return {
       slug: item.icon,
       value: item.value,
-      path: icon.path,
+      path: icon?.path,
       iconScale,
-      iconWidth: icon.width * iconScale,
+      iconWidth: icon ? icon.width * iconScale : 0,
       valueWidth: textWidth(item.value, fontSize),
     }
   })
 
   const width =
     endPad * 2 +
-    sumBy(measured, (m) => m.iconWidth + iconGap + m.valueWidth) +
+    // a value with no icon takes neither the icon's width nor the gap after it
+    sumBy(
+      measured,
+      (m) => m.iconWidth + (m.path ? iconGap : 0) + m.valueWidth
+    ) +
     itemGap * Math.max(measured.length - 1, 0)
 
   const iconY = (height - iconSize) / 2
@@ -170,6 +175,12 @@ export const renderBadge = ({
     const value = (at: number) =>
       `<text x="${round(at)}" y="${baseline}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}">${escapeText(m.value)}</text>`
 
+    // a value on its own is drawn where the pair would have started
+    if (!m.path) {
+      parts.push(value(x))
+      x += m.valueWidth + itemGap
+      continue
+    }
     // the pair occupies the same run either way, so only what is drawn at
     // each end of it changes
     const [first, second, firstWidth] =
@@ -185,7 +196,9 @@ export const renderBadge = ({
   const w = round(width)
   // reads as "19 git-commit" whichever side the icon is drawn on: the label
   // is what the badge says, not how it is laid out
-  const label = measured.map((m) => `${m.value} ${m.slug}`).join(', ')
+  const label = measured
+    .map((m) => (m.slug === undefined ? m.value : `${m.value} ${m.slug}`))
+    .join(', ')
   // dropped entirely rather than drawn with fill="none", so a transparent
   // badge carries no element whose only effect would be on its own bounds
   const background =

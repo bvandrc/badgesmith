@@ -26,7 +26,7 @@ Opening the root with no query returns a short HTML page: three live examples, e
 
 | param | default | notes |
 | --- | --- | --- |
-| `items` | _required_ | comma-separated `icon:value` pairs, up to 6; value 1–12 chars |
+| `items` | _required_ | comma-separated `icon:value` pairs, up to 6; a value alone draws without an icon; value 1–32 chars |
 | `color` | `2f363d` | pill background, 3- or 6-digit hex, no `#`, or `none` for no background |
 | `iconColor` | `8B949E` |  |
 | `textColor` | `fff` |  |

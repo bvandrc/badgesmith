@@ -29,6 +29,15 @@ describe('parseItems', () => {
     assert.deepEqual(parseItems('tag:1.2M'), [{ icon: 'tag', value: '1.2M' }])
   })
 
+  test('reads a value on its own, which draws without an icon', () => {
+    assert.deepEqual(parseItems('repo'), [{ value: 'repo' }])
+    // mixed with a pair, and not mistaken for an icon of the same name
+    assert.deepEqual(parseItems('git-commit:370,star'), [
+      { icon: 'git-commit', value: '370' },
+      { value: 'star' },
+    ])
+  })
+
   test('items is required', () => {
     rejects(() => parseItems(null), 'items is required')
     rejects(() => parseItems(''), 'items is required')
@@ -42,10 +51,10 @@ describe('parseItems', () => {
   })
 
   test('rejects a malformed item, including a stray second colon', () => {
-    for (const raw of ['star', 'star:', ':12', 'star:1:2']) {
+    for (const raw of ['star:', ':12', 'star:1:2']) {
       rejects(
         () => parseItems(raw),
-        `malformed item "${raw}" — expected icon:value`
+        `malformed item "${raw}" — expected icon:value, or value alone`
       )
     }
   })
@@ -55,14 +64,20 @@ describe('parseItems', () => {
   })
 
   test('rejects an over-long value', () => {
+    const thirtyTwo = '1'.repeat(32)
     rejects(
-      () => parseItems('star:1234567890123'),
-      'value for "star" must be at most 12 characters'
+      () => parseItems(`star:${thirtyTwo}3`),
+      'value for "star" must be at most 32 characters'
     )
-    // twelve is the limit, not past it
-    assert.deepEqual(parseItems('star:123456789012'), [
-      { icon: 'star', value: '123456789012' },
+    // thirty-two is the limit, not past it
+    assert.deepEqual(parseItems(`star:${thirtyTwo}`), [
+      { icon: 'star', value: thirtyTwo },
     ])
+    // an item with no icon is named by its own value when it is too long
+    rejects(
+      () => parseItems(`${thirtyTwo}3`),
+      `value for "${thirtyTwo}3" must be at most 32 characters`
+    )
   })
 })
 

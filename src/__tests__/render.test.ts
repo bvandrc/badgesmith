@@ -3,10 +3,13 @@ import { readFileSync } from 'node:fs'
 import { describe, test } from 'node:test'
 
 import { SAMPLE_INPUT, TEST_FIXTURE_INPUTS } from '../__fixtures__/inputs.ts'
+import { getIcon } from '../icons.ts'
 import { renderBadge, TRANSPARENT } from '../render.ts'
 
 const read = (path: string) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
+
+const round = (n: number) => Number(n.toFixed(2))
 
 const stale = (file: string) =>
   `${file} differs — run \`pnpm gen:svg\` if the change is intended`
@@ -139,6 +142,21 @@ describe('renderBadge', () => {
     // Only the boundary inside the pair does, since an icon and its value
     // are not the same width.
     assert.equal(widthOf(right), widthOf(left))
+  })
+
+  test('a value with no icon draws none, and takes no room for one', () => {
+    const withIcon = renderBadge({ items: [{ icon: 'star', value: '12' }] })
+    const alone = renderBadge({ items: [{ value: '12' }] })
+
+    assert.match(withIcon, /<g fill=/)
+    assert.doesNotMatch(alone, /<g fill=/)
+    assert.match(alone, /<text /)
+
+    // narrower by the icon and the gap that followed it, not merely by the
+    // icon: an absent icon leaves no space behind
+    const star = getIcon('star')
+    const iconWidth = (star.width / star.height) * 14
+    assert.equal(widthOf(alone), round(widthOf(withIcon) - iconWidth - 4))
   })
 
   test('escapes values rather than emitting raw markup', () => {

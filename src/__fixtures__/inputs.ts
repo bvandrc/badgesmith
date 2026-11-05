@@ -129,6 +129,15 @@ export const TEST_FIXTURE_INPUTS = {
     font: 'arial',
     fontSize: 20,
   },
+  // an icon on its own, beside a pair and a value alone, so the fixture pins
+  // all three forms and the gap an icon with no value does not take
+  'icon-only': {
+    items: [
+      { icon: 'shield-check' },
+      { icon: 'star', value: '9' },
+      { value: 'ready' },
+    ],
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

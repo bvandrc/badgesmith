@@ -30,11 +30,14 @@ console.log(`# ${base}\n`)
 const queryFor = ({ items, ...style }: BadgeOptions) => {
   const params = new URLSearchParams({
     items: items
-      // an item with no icon goes over as its value alone, the way the
-      // parser reads it back
-      .map(({ icon, value }) =>
-        icon === undefined ? value : `${icon}:${value}`
-      )
+      // each form goes over the way the parser reads it back: a value alone,
+      // an icon alone with its trailing colon, or the pair
+      .map(({ icon, value }) => {
+        if (icon === undefined) {
+          return value
+        }
+        return value === undefined ? `${icon}:` : `${icon}:${value}`
+      })
       .join(','),
   })
   for (const [key, value] of Object.entries(style)) {

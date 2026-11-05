@@ -39,6 +39,10 @@ export const EXAMPLES: readonly Example[] = [
     path: '/?items=rocket:shipped,%F0%9F%9A%80%20shipped&color=1f6feb&iconColor=fff',
   },
   {
+    title: 'An icon on its own, written with a trailing colon',
+    path: '/?items=shield-check:,law:MIT,tag:v2.1.0&color=1a7f37&iconColor=fff',
+  },
+  {
     title: 'Up to six items',
     path: '/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&radius=4',
   },

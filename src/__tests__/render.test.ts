@@ -108,6 +108,20 @@ describe('renderBadge', () => {
     assert.ok(svg.includes('<g fill='))
   })
 
+  test('trimming the padding grows the contents, it does not crop the pill', () => {
+    const items = [{ icon: 'star', value: '12' }]
+    const sizeOf = (svg: string) => ({
+      font: svg.match(/font-size="([\d.]+)"/)?.[1],
+      icon: svg.match(/scale\(([\d.]+)\)/)?.[1],
+      width: svg.match(/width="([\d.]+)"/)?.[1],
+    })
+    const full = sizeOf(renderBadge({ items }))
+    // six fewer pixels of box, the padding the default leaves, so the
+    // contents come out the same size in a shorter pill
+    const trimmed = sizeOf(renderBadge({ items, height: 14, padY: 0 }))
+    assert.deepEqual(trimmed, full)
+  })
+
   test('escapes values rather than emitting raw markup', () => {
     const svg = renderBadge({ items: [{ icon: 'tag', value: '<b>&"' }] })
     assert.doesNotMatch(svg, /<b>/)

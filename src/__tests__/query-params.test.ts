@@ -121,6 +121,25 @@ describe('parseStyle', () => {
     assert.deepEqual(style('color=ABCdef'), { color: 'ABCdef' })
   })
 
+  test('reads padY, including zero', () => {
+    assert.deepEqual(style('padY=0'), { padY: 0 })
+    assert.deepEqual(style('padY=2&height=20'), { padY: 2, height: 20 })
+  })
+
+  test('rejects padding that leaves the contents no room', () => {
+    // the schema checks each field alone, so this is the one rule that needs
+    // both: half the box on each side would scale the contents to nothing
+    rejects(
+      () => style('padY=10&height=20'),
+      'padY must be under half of height (10)'
+    )
+    // the same rule against the default height, which the schema cannot see either
+    rejects(() => style('padY=10'), 'padY must be under half of height (10)')
+    // just inside is allowed
+    assert.deepEqual(style('padY=9&height=20'), { padY: 9, height: 20 })
+    assert.deepEqual(style('padY=5&height=12'), { padY: 5, height: 12 })
+  })
+
   test('rejects a number outside its range, NaN included', () => {
     const height = 'height must be a number between 12 and 64'
     for (const raw of ['11', '65', 'abc', '']) {

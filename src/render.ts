@@ -34,11 +34,21 @@ export type BadgeStyle = {
    */
   textColor?: string
   /**
-   * Pill height in px; every other dimension scales from it.
+   * Pill height in px — the box, which the contents are centred in.
    *
    * @default 20 — shields' own flat-square height
    */
   height?: number
+  /**
+   * Space above and below the contents in px.
+   *
+   * The contents scale to the room this leaves rather than to `height`, so
+   * trimming it grows the icons and text instead of just cropping the pill.
+   * Must leave some room: `padY * 2` below `height`.
+   *
+   * @default 15% of `height` — the shields proportion, 3px at the default
+   */
+  padY?: number
   /**
    * Corner radius in px, at the pill's natural height.
    *
@@ -50,7 +60,7 @@ export type BadgeStyle = {
 export type BadgeOptions = BadgeStyle & { items: BadgeItem[] }
 
 /** The height the proportions below are expressed at. */
-const BASE_HEIGHT = 20
+export const BASE_HEIGHT = 20
 
 /**
  * Shields' flat-square proportions at `BASE_HEIGHT`.
@@ -69,6 +79,15 @@ const BASE_PROPORTIONS = {
   // between one icon/value pair and the next
   itemGap: 9,
 } as const
+
+/**
+ * A digit's height as a fraction of its font size, for the fonts below.
+ *
+ * 8px at the 11px font `BASE_PROPORTIONS` sets. Centring on it reproduces
+ * the baseline those proportions were drawn around exactly, which is what
+ * keeps a default badge byte-identical now the two can be decoupled.
+ */
+const DIGIT_CAP_RATIO = 8 / 11
 
 const escapeText = (text: string) =>
   text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`)
@@ -89,12 +108,21 @@ export const renderBadge = ({
   iconColor = '8B949E',
   textColor = 'fff',
   height = BASE_HEIGHT,
+  padY,
   radius = 0,
 }: BadgeOptions) => {
-  // every dimension scales from the requested height
+  // Contents scale to the room padY leaves rather than to the box, so
+  // trimming it grows them instead of cropping the pill. The two branches are
+  // algebraically the same at the default padding but not bit for bit — the
+  // rounding below can land either side — so an unset padY keeps the original
+  // expression, and with it the committed fixtures.
+  const scale =
+    padY === undefined
+      ? height / BASE_HEIGHT
+      : (height - 2 * padY) / BASE_PROPORTIONS.iconSize
   const { fontSize, iconSize, endPad, iconGap, itemGap } = mapValues(
     BASE_PROPORTIONS,
-    (value) => value * (height / BASE_HEIGHT)
+    (value) => value * scale
   )
 
   const measured = items.map((item) => {
@@ -126,7 +154,7 @@ export const renderBadge = ({
     )
     x += m.iconWidth + iconGap
     parts.push(
-      `<text x="${round(x)}" y="${round(height * 0.7)}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}">${escapeText(m.value)}</text>`
+      `<text x="${round(x)}" y="${round((height + DIGIT_CAP_RATIO * fontSize) / 2)}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}">${escapeText(m.value)}</text>`
     )
     x += m.valueWidth + itemGap
   }

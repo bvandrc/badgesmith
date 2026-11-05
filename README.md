@@ -30,8 +30,11 @@ Opening the root with no query returns a short HTML page: three live examples, e
 | `color` | `2f363d` | pill background, 3- or 6-digit hex, no `#`, or `none` for no background |
 | `iconColor` | `8B949E` |  |
 | `textColor` | `fff` |  |
-| `height` | `20` | 12–64; everything scales from it |
+| `height` | `20` | 12–64; the box the contents are centred in |
+| `padY` | 15% of `height` | 0–32; space above and below the contents, under half of `height` |
 | `radius` | `0` | corner radius; `0` matches shields' flat-square |
+
+Contents scale to the room `padY` leaves them, not to `height`, so trimming the padding grows the icons and text rather than cropping the pill. `height=14&padY=0` renders the default 11px text in a 14px box — 14px being as short as it goes at that text size, since the icon is the taller of the two. Going shorter still is allowed and shrinks the text with it.
 
 `color=none` draws no background, so the badge sits on whatever is behind it. Nothing then separates the badge from the page, so `iconColor` and `textColor` have to carry their own contrast — a README shown on both GitHub themes wants a mid grey such as `6E7681` rather than the default white text, which disappears on a light background.
 

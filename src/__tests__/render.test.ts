@@ -182,6 +182,23 @@ describe('renderBadge', () => {
     assert.equal(drawnHeight(half.y), drawnHeight(full.y) / 2)
   })
 
+  test('underline marks the text without costing width', () => {
+    const items = [
+      { icon: 'star', value: '12' },
+      { icon: 'tag', value: 'v1' },
+    ]
+    const plain = renderBadge({ items })
+    const lined = renderBadge({ items, underline: true })
+
+    // every value, not just the first
+    assert.equal(plain.match(/text-decoration/g), null)
+    assert.equal(lined.match(/text-decoration="underline"/g)?.length, 2)
+
+    // an underline does not change what a glyph advances by, so the badge
+    // measures the same — this is what makes the width table still right
+    assert.equal(widthOf(lined), widthOf(plain))
+  })
+
   test('escapes values rather than emitting raw markup', () => {
     const svg = renderBadge({ items: [{ icon: 'tag', value: '<b>&"' }] })
     assert.doesNotMatch(svg, /<b>/)

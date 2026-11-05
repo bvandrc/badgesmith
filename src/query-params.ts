@@ -100,6 +100,12 @@ const zBackground = zColorLike(
   `must be a 3- or 6-digit hex color without '#', or '${TRANSPARENT}'`
 )
 
+/** A param the query string carries as a word, since it has no bare flags. */
+const zFlag = zPipe(
+  zEnum(['true', 'false'], { error: 'must be true or false' }),
+  zTransform((value) => value === 'true')
+)
+
 /** A param holding a number within an inclusive range. */
 const zBoundedParam = (min: number, max: number) => {
   // one message for both ends, and NaN fails both checks, so the reason a
@@ -127,6 +133,7 @@ const styleSchema = zObject({
   // at 1 the icon already fills the height the contents are given, so above
   // that it would run past the badge and be cut off by its edges
   iconScale: zOptional(zBoundedParam(0.25, 1)),
+  underline: zOptional(zFlag),
   iconSide: zOptional(
     zEnum(ICON_SIDES, { error: `must be ${ICON_SIDES.join(' or ')}` })
   ),

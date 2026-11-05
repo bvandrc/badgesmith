@@ -88,6 +88,11 @@ export const TEST_FIXTURE_INPUTS = {
     items: [{ icon: 'file-directory', value: 'repo' }],
     iconScale: 0.7,
   },
+  // a line under every value, which costs the badge no width
+  underlined: {
+    items: [{ icon: 'file-directory', value: 'repo' }],
+    underline: true,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

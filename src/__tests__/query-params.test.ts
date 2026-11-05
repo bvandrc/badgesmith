@@ -171,6 +171,14 @@ describe('parseStyle', () => {
     rejects(() => style('iconScale=0.1'), message)
   })
 
+  test('reads underline, which the query carries as a word', () => {
+    assert.deepEqual(style('underline=true'), { underline: true })
+    assert.deepEqual(style('underline=false'), { underline: false })
+    // there are no bare flags here, so a present-but-empty one is not true
+    rejects(() => style('underline'), 'underline must be true or false')
+    rejects(() => style('underline=1'), 'underline must be true or false')
+  })
+
   test('rejects a number outside its range, NaN included', () => {
     const height = 'height must be a number between 12 and 64'
     for (const raw of ['11', '65', 'abc', '']) {

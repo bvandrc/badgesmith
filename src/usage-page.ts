@@ -2,20 +2,26 @@
 const REPO_URL = 'https://github.com/bvandrc/badgesmith'
 
 /**
- * The query strings this page demonstrates.
+ * The paths this page demonstrates, a provider's among them.
  *
  * Each is rendered by the same worker serving the page, so an example cannot
  * claim an output the renderer does not actually produce.
  */
 const EXAMPLES = [
-  'items=git-commit:370,git-pull-request:264',
-  'items=star:1.2k,repo-forked:89&color=1f6feb&iconColor=fff&height=24&radius=6',
-  'items=logo-github:49,tag:v2.1.0&radius=10',
-  'items=stable,star:9&color=1f6feb',
-  'items=react-toolkit&bold=true&underline=true&color=none&textColor=0969da',
-  'items=file-directory:repo&iconScale=0.7&color=none&textColor=4d79b2&iconColor=4d79b2&underline=true',
-  'items=git-commit:370,git-pull-request:264&iconSide=right',
-  'items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=14&padY=0',
+  '/github?repo=bvandrc/badgesmith',
+  '/?items=git-commit:370,git-pull-request:264',
+  '/?items=star:1.2k,repo-forked:89,eye:42&color=1f6feb&iconColor=fff&radius=6',
+  '/?items=check-circle:passing,shield-check:A%2B,versions:v2.1.0&color=1a7f37&iconColor=fff',
+  '/?items=stable,tag:v2.1.0,law:MIT&color=8250df&iconColor=fff',
+  '/?items=issue-opened:12,issue-closed:340,git-merge:211,comment-discussion:58,people:23,heart:1k&radius=4',
+  '/?items=flame:hot,zap:fast,rocket:shipped&color=bf3989&iconColor=fff&bold=true&radius=10',
+  '/?items=logo-github:49,tag:v2.1.0&height=28&radius=14',
+  '/?items=git-commit:370,git-pull-request:264&iconSide=right',
+  '/?items=clock:2h,calendar:Nov%202026&color=f6f8fa&textColor=1f2328&iconColor=59636e&radius=6',
+  '/?items=react-toolkit&bold=true&underline=true&color=none&textColor=0969da',
+  '/?items=book:docs&bold=true&underline=true&color=none&textColor=0969da&iconColor=0969da&iconScale=0.7',
+  '/?items=file-directory:repo&iconScale=0.7&color=none&textColor=4d79b2&iconColor=4d79b2&underline=true',
+  '/?items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=14&padY=0',
 ] as const
 
 const escapeHtml = (text: string) =>
@@ -29,10 +35,10 @@ const escapeHtml = (text: string) =>
  * this same deployment rather than a hard-coded one.
  */
 export const usagePage = (origin: string) => {
-  const examples = EXAMPLES.map((query) => {
-    const path = `/?${query}`
-    return `<tr><td><a href="${escapeHtml(path)}"><img src="${escapeHtml(`${origin}${path}`)}" alt="example badge"></a></td><td><code>${escapeHtml(path)}</code></td></tr>`
-  }).join('')
+  const examples = EXAMPLES.map(
+    (path) =>
+      `<tr><td><a href="${escapeHtml(path)}"><img src="${escapeHtml(`${origin}${path}`)}" alt="example badge"></a></td><td><code>${escapeHtml(path)}</code></td></tr>`
+  ).join('')
 
   return `<!doctype html>
 <html lang="en">

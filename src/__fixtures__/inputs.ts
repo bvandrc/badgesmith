@@ -1,7 +1,7 @@
 import { type BadgeOptions, TRANSPARENT } from '../render.ts'
 
 /**
- * The badge shown in the README; `sample.svg` is generated from it.
+ * A badge as a README would embed it; `sample.svg` is generated from it.
  *
  * 18px to sit on a line of text, which is how a README embeds one.
  */

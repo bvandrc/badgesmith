@@ -81,6 +81,17 @@ const EMOJI_ADVANCE = 1.3
 const isEmoji = (grapheme: string) =>
   /\p{Extended_Pictographic}|\p{Regional_Indicator}/u.test(grapheme)
 
+/**
+ * The space that survives being drawn.
+ *
+ * SVG collapses a run of ordinary spaces to one, and the CSS that would stop
+ * it is blocked by the proxy these are served through, so a caller wanting a
+ * gap wider than one space reaches for these instead. It advances exactly as
+ * a space does — identical in every face these tables cover — so that is how
+ * it is measured, rather than falling to the width of the widest glyph.
+ */
+const NBSP = '\u00a0'
+
 /** Splits text the way it is drawn: one unit per mark the reader sees. */
 const graphemes = (text: string) =>
   [...new Intl.Segmenter().segment(text)].map((entry) => entry.segment)
@@ -114,7 +125,7 @@ export const textWidth = (
       // against the size this table was measured at and scaled with the rest
       isEmoji(grapheme)
         ? EMOJI_ADVANCE * widths.fontSize
-        : (widths.chars[grapheme] ?? widths.fallback)
+        : (widths.chars[grapheme === NBSP ? ' ' : grapheme] ?? widths.fallback)
     ) *
     (fontSize / widths.fontSize)
   )

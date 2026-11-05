@@ -33,6 +33,20 @@ describe('textWidth', () => {
     }
   })
 
+  test('measures a non-breaking space as a space', () => {
+    const size = 20
+    for (const font of BADGE_FONTS) {
+      assert.equal(
+        textWidth('\u00a0', size, { font }),
+        textWidth(' ', size, { font }),
+        `${font}: a non-breaking space should advance as a space does`
+      )
+    }
+    // which is the point of it: a run of them survives being drawn, and is
+    // measured at what it will actually take
+    assert.equal(textWidth('\u00a0'.repeat(5), 20), textWidth('     ', 20))
+  })
+
   test('still measures ASCII from the table', () => {
     // the glyphs are not all one width, which a fallback for everything
     // would have made them

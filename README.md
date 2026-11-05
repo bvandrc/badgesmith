@@ -34,7 +34,10 @@ Opening the root with no query returns a short HTML page: three live examples, e
 | `padY` | 15% of `height` | 0–32; space above and below the contents, under half of `height` |
 | `iconSide` | `left` | `left` or `right`; which side of its value each icon sits on |
 | `iconScale` | `1` | 0.25–1; how large each icon is against its value |
+| `underline` | `false` | `true` or `false`; draws a line under every value |
 | `radius` | `0` | corner radius; `0` matches shields' flat-square |
+
+`underline=true` draws a line under every value, which costs no width: an underline does not change what a glyph advances by, so the measured text stays the right size. It is a presentation attribute rather than CSS, so GitHub's image proxy serves it intact.
 
 `iconScale` draws the icons smaller against their values. At 1 an icon fills the height the contents are given, which is taller than the text beside it; lower brings it nearer the text's own size, and the badge narrows by what the icon gives up. It stops at 1 because the icon already fills that height — a larger one would run past the badge and be cut off by its edges.
 

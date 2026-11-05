@@ -56,6 +56,15 @@ export type BadgeStyle = {
    */
   padY?: number
   /**
+   * Draws a line under every value.
+   *
+   * Costs nothing in width: an underline does not change what a glyph
+   * advances by, so the measured text is still the right size.
+   *
+   * @default false
+   */
+  underline?: boolean
+  /**
    * How large each icon is against its own value, as a fraction of normal.
    *
    * 1 leaves an icon filling the height the contents are given, which is
@@ -138,6 +147,7 @@ export const renderBadge = ({
   radius = 0,
   iconSide = 'left',
   iconScale = 1,
+  underline = false,
 }: BadgeOptions) => {
   // Contents scale to the room padY leaves rather than to the box, so
   // trimming it grows them instead of cropping the pill. The two branches are
@@ -186,7 +196,7 @@ export const renderBadge = ({
     const icon = (at: number) =>
       `<g fill="#${iconColor}" transform="translate(${round(at)} ${round((height - m.iconHeight) / 2)}) scale(${round(m.drawScale)})">${m.path}</g>`
     const value = (at: number) =>
-      `<text x="${round(at)}" y="${baseline}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}">${escapeText(m.value)}</text>`
+      `<text x="${round(at)}" y="${baseline}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}"${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value)}</text>`
 
     // a value on its own is drawn where the pair would have started
     if (!m.path) {

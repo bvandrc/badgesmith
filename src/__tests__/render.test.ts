@@ -271,6 +271,33 @@ describe('renderBadge', () => {
     assert.ok(widthOf(bigger) > widthOf(base))
   })
 
+  test('an emoji advances once, whatever it is built from', () => {
+    const widthFor = (value: string) =>
+      widthOf(renderBadge({ items: [{ value }] }))
+
+    // a plain emoji, one carrying a variation selector, and a joined sequence
+    // of three code points all draw as one mark and take one advance
+    const plain = widthFor('🧪')
+    assert.equal(
+      widthFor('🖥️'),
+      plain,
+      'a variation selector is not a second mark'
+    )
+    assert.equal(
+      widthFor('👨‍💻'),
+      plain,
+      'a joined sequence is not three marks'
+    )
+
+    // and it is measured as an emoji rather than as an unknown character,
+    // which the table would have answered for far too narrowly
+    const letter = widthFor('M')
+    assert.ok(
+      plain > letter,
+      `expected an emoji (${plain}) to advance further than a capital (${letter})`
+    )
+  })
+
   test('escapes values rather than emitting raw markup', () => {
     const svg = renderBadge({ items: [{ icon: 'tag', value: '<b>&"' }] })
     assert.doesNotMatch(svg, /<b>/)

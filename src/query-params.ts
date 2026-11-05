@@ -32,10 +32,13 @@ const MAX_ITEMS = 6
 /**
  * Longest value an item may carry, which bounds how wide a pill can get.
  *
- * Room for a short label rather than only a count, now that an item can be a
- * value on its own. Six of them is still a bounded width.
+ * Room for a phrase rather than only a count or a word, now that an item can
+ * be a value on its own and that a value can hold emoji. Counted in code
+ * units, so an emoji spends up to three of them — a surrogate pair and the
+ * variation selector some carry — and a joined sequence more again. Six items
+ * of this is still a bounded width.
  */
-const MAX_VALUE_LENGTH = 32
+const MAX_VALUE_LENGTH = 64
 
 /** Parses `items=icon:value,value,…`. Throws `BadRequestError` if invalid. */
 export const parseItems = (raw: string | null) => {

@@ -47,6 +47,7 @@
     "@primer/octicons": "^19",
     "@types/node": "^26",
     "anafanafo": "^2",
+    "fontkit": "^2",
     "preact": "^11",
     "preact-render-to-string": "^6",
     "tsx": "^4",

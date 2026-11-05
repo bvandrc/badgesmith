@@ -1,76 +1,209 @@
 /**
- * Regenerates src/generated/text-widths.ts from anafanafo.
+ * Regenerates src/generated/text-widths.ts — the advance widths every badge is
+ * measured against.
  *
- * anafanafo holds shields.io's own Verdana metrics, which is the font this
- * renderer asks for. It would run in a Worker, but it carries four full font
- * tables to answer for the 95 characters at one size that a badge can show.
- * Extracting the widths here keeps the runtime dependency-free and the numbers
- * exact rather than estimated.
+ * SVG cannot measure text and GitHub's image proxy forbids external fonts, so
+ * a badge's width has to be computed before it is drawn. These tables are what
+ * that computation reads.
+ *
+ * Two sources, for one reason. Verdana comes from anafanafo, which carries
+ * shields.io's own metrics: re-measuring it here would move every width a
+ * published badge already renders at. The rest are read out of the font files
+ * themselves, which anafanafo does not carry.
  */
 
-import { writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
+import { existsSync, writeFileSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import anafanafo from 'anafanafo'
+import { openSync } from 'fontkit'
 
 const OUT = 'src/generated/text-widths.ts'
-// anafanafo carries Verdana at 11px regular and 10px bold, and no other pair
-// of them; a caller scales from whichever size its table was measured at, so
-// the two needing different sizes costs nothing.
-const FACES = [
-  { name: 'NORMAL', fontSize: 11, font: '11px Verdana' },
-  { name: 'BOLD', fontSize: 10, font: 'bold 10px Verdana' },
-] as const
-// printable ASCII; a badge value is 12 characters at most, so anything beyond
+
+// printable ASCII; a badge value is 32 characters at most, so anything beyond
 // this is rare enough to take the conservative fallback below
 const FIRST = 0x20
 const LAST = 0x7e
 
-const table = ({ fontSize, font }: { fontSize: number; font: string }) => {
+type Face = { fontSize: number; width: (char: string) => number }
+type Source = {
+  /** what the SVG asks for, most exact first */
+  family: string
+  /** digit height as a fraction of font size, which the baseline centres on */
+  capRatio: string
+  normal: Face
+  bold: Face
+}
+
+// ******************************************************************************
+// anafanafo — Verdana only
+// ******************************************************************************
+
+// anafanafo carries Verdana at 11px regular and 10px bold, and no other pair
+// of them; a caller scales from whichever size its table was measured at, so
+// the two needing different sizes costs nothing.
+const verdana: Source = {
+  family: 'Verdana,DejaVu Sans,sans-serif',
+  // 8px at the 11px font the badge proportions are drawn around. Written as
+  // the fraction it has always been rather than measured, so the baseline of
+  // a default badge stays where the committed fixtures pin it.
+  capRatio: '8 / 11',
+  normal: {
+    fontSize: 11,
+    width: (c) => anafanafo(c, { font: '11px Verdana' }),
+  },
+  bold: {
+    fontSize: 10,
+    width: (c) => anafanafo(c, { font: 'bold 10px Verdana' }),
+  },
+}
+
+// ******************************************************************************
+// font files — everything else
+// ******************************************************************************
+
+/**
+ * The font file backing a family and style, or throws naming what to install.
+ *
+ * Asks fontconfig first, which is what resolves the substitutions a reader's
+ * browser will make anyway, and falls back to the paths macOS keeps them at.
+ */
+const findFont = (family: string, style: string) => {
+  try {
+    const path = execFileSync(
+      'fc-match',
+      ['-f', '%{file}', `${family}:style=${style}`],
+      {
+        encoding: 'utf8',
+      }
+    ).trim()
+    // fc-match answers with *something* for any query, so check it is the face
+    // asked for rather than whatever fontconfig fell back to
+    if (path && openSync(path).familyName === family) {
+      return path
+    }
+  } catch {
+    // no fontconfig on this machine; try the known locations below
+  }
+  const file = `${family.replace(/ /g, '')}-${style}.ttf`
+  const candidate = [
+    `/usr/share/fonts/truetype/liberation/${file}`,
+    `/Library/Fonts/${file}`,
+    `${process.env.HOME}/Library/Fonts/${file}`,
+  ].find(existsSync)
+  if (!candidate) {
+    throw new Error(
+      `cannot find "${family} ${style}". These tables are generated from the Liberation fonts, which are metric-compatible with the families the badge asks for and freely redistributable, unlike those families themselves. Install them (Debian/Ubuntu: fonts-liberation, macOS: brew install --cask font-liberation) and run this again.`
+    )
+  }
+  return candidate
+}
+
+/** A face read straight out of its font file, at the size the table records. */
+const fromFile = (family: string, style: string, fontSize: number): Face => {
+  const font = openSync(findFont(family, style))
+  return {
+    fontSize,
+    width: (char) =>
+      (font.layout(char).glyphs[0].advanceWidth / font.unitsPerEm) * fontSize,
+  }
+}
+
+/** The ratio the baseline centres on, read from the font's own cap height. */
+const capRatioOf = (family: string, style: string) => {
+  const font = openSync(findFont(family, style))
+  return `${font.capHeight / font.unitsPerEm}`
+}
+
+/**
+ * A family tabulated from its Liberation counterpart.
+ *
+ * Liberation was drawn to the same advance widths as the family it stands in
+ * for, so the numbers hold whichever of the two a reader actually has — and
+ * Liberation is the one a build machine can be relied on to install.
+ */
+const metricClone = (liberation: string, stack: string): Source => ({
+  family: stack,
+  capRatio: capRatioOf(liberation, 'Regular'),
+  // 11px for both, unlike Verdana above: nothing constrains the size a table
+  // is measured at, and one pair of sizes is one less thing to explain
+  normal: fromFile(liberation, 'Regular', 11),
+  bold: fromFile(liberation, 'Bold', 11),
+})
+
+const SOURCES = {
+  verdana,
+  arial: metricClone(
+    'Liberation Sans',
+    'Arial,Liberation Sans,Helvetica,sans-serif'
+  ),
+  times: metricClone(
+    'Liberation Serif',
+    'Times New Roman,Liberation Serif,Times,serif'
+  ),
+  courier: metricClone(
+    'Liberation Mono',
+    'Courier New,Liberation Mono,monospace'
+  ),
+}
+
+// ******************************************************************************
+// emit
+// ******************************************************************************
+
+const table = ({ fontSize, width }: Face) => {
   const widths = new Map<string, number>()
   for (let code = FIRST; code <= LAST; code++) {
     const char = String.fromCharCode(code)
-    widths.set(char, anafanafo(char, { font }))
+    widths.set(char, width(char))
   }
   const entries = [...widths]
-    .map(([char, width]) => `    ${JSON.stringify(char)}: ${width},`)
+    .map(([char, w]) => `        ${JSON.stringify(char)}: ${w},`)
     .join('\n')
   // the widest glyph, so a character absent from the table is never measured
   // too narrow and text cannot overflow the pill
   const fallback = Math.max(...widths.values())
-  return { entries, fallback, count: widths.size, fontSize }
+  return `{
+      fontSize: ${fontSize},
+      fallback: ${fallback},
+      chars: {
+${entries}
+      } as Record<string, number | undefined>,
+    }`
 }
 
-const faces = FACES.map((face) => ({ ...face, ...table(face) }))
-
-const declarations = faces
-  .map(
-    ({ name, fontSize, fallback, entries }) => `/**
- * Verdana advance widths, measured at \`fontSize\`; a caller scales from it.
- *
- * \`fallback\` is the widest glyph here, used for anything absent, so text is
- * never measured too narrow for the pill it has to fit.
- */
-export const ${name}_WIDTHS = {
-  fontSize: ${fontSize},
-  fallback: ${fallback},
-  chars: {
-${entries}
-  } as Record<string, number | undefined>,
-}`
-  )
-  .join('\n\n')
+const faces = Object.entries(SOURCES).map(([name, source]) => ({
+  name,
+  source,
+  body: `  ${name}: {
+    family: '${source.family}',
+    capRatio: ${source.capRatio},
+    normal: ${table(source.normal)},
+    bold: ${table(source.bold)},
+  },`,
+}))
 
 const file = `// GENERATED by scripts/generate-text-widths.ts — run \`pnpm gen:widths\` to refresh.
-// Verdana advance widths from anafanafo, shields.io's own font metrics.
+// Verdana from anafanafo, shields.io's own metrics; the rest read out of the
+// Liberation fonts, which carry the advance widths of the families they name.
 
-${declarations}
+/**
+ * Advance widths per font, measured at \`fontSize\`; a caller scales from it.
+ *
+ * \`fallback\` is the widest glyph in that face, used for anything absent, so
+ * text is never measured too narrow for the pill it has to fit. \`capRatio\`
+ * is the font's cap height over its em, which the baseline centres on.
+ */
+export const FONT_METRICS = {
+${faces.map((f) => f.body).join('\n')}
+}
 `
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '..')
 writeFileSync(join(root, OUT), file)
-for (const { name, count, fontSize, fallback } of faces) {
+for (const { name, source } of faces) {
   console.log(
-    `${OUT}: ${name} ${count} characters at ${fontSize}px, fallback ${fallback}`
+    `${OUT}: ${name} — ${source.normal.fontSize}px normal, ${source.bold.fontSize}px bold, capRatio ${source.capRatio}`
   )
 }

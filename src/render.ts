@@ -1,7 +1,7 @@
 import { mapValues, sumBy } from 'es-toolkit'
 
 import { getIcon } from './icons.ts'
-import { textWidth } from './text.ts'
+import { type BadgeFont, digitCapRatio, fontFamily, textWidth } from './text.ts'
 
 /** One pair the badge holds. Without an `icon` it is the value alone. */
 export type BadgeItem = { icon?: string; value: string }
@@ -99,6 +99,16 @@ export type BadgeStyle = {
    * @default 0 — square corners, matching shields' flat-square
    */
   radius?: number
+  /**
+   * Which face every value is drawn in.
+   *
+   * Only families a reader already has, since the proxy serving this SVG
+   * forbids fetching a font. Each is measured against its own metrics, so the
+   * pill is the width that face actually needs.
+   *
+   * @default 'verdana' — shields' own font
+   */
+  font?: BadgeFont
 }
 
 export type BadgeOptions = BadgeStyle & { items: BadgeItem[] }
@@ -123,15 +133,6 @@ const BASE_PROPORTIONS = {
   // between one icon/value pair and the next
   itemGap: 9,
 } as const
-
-/**
- * A digit's height as a fraction of its font size, for the fonts below.
- *
- * 8px at the 11px font `BASE_PROPORTIONS` sets. Centring on it reproduces
- * the baseline those proportions were drawn around exactly, which is what
- * keeps a default badge byte-identical now the two can be decoupled.
- */
-const DIGIT_CAP_RATIO = 8 / 11
 
 const escapeText = (text: string) =>
   text.replace(/[&<>"']/g, (char) => `&#${char.charCodeAt(0)};`)
@@ -158,6 +159,7 @@ export const renderBadge = ({
   iconScale = 1,
   underline = false,
   bold = false,
+  font = 'verdana',
 }: BadgeOptions) => {
   // Contents scale to the room padY leaves rather than to the box, so
   // trimming it grows them instead of cropping the pill. The two branches are
@@ -186,7 +188,7 @@ export const renderBadge = ({
       drawScale,
       iconWidth: icon ? icon.width * drawScale : 0,
       iconHeight: icon ? icon.height * drawScale : 0,
-      valueWidth: textWidth(item.value, fontSize, bold),
+      valueWidth: textWidth(item.value, fontSize, { font, bold }),
     }
   })
 
@@ -201,12 +203,12 @@ export const renderBadge = ({
 
   let x = endPad
   const parts: string[] = []
-  const baseline = round((height + DIGIT_CAP_RATIO * fontSize) / 2)
+  const baseline = round((height + digitCapRatio(font) * fontSize) / 2)
   for (const m of measured) {
     const icon = (at: number) =>
       `<g fill="#${iconColor}" transform="translate(${round(at)} ${round((height - m.iconHeight) / 2)}) scale(${round(m.drawScale)})">${m.path}</g>`
     const value = (at: number) =>
-      `<text x="${round(at)}" y="${baseline}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}"${bold ? ' font-weight="bold"' : ''}${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value)}</text>`
+      `<text x="${round(at)}" y="${baseline}" font-family="${fontFamily(font)}" font-size="${round(fontSize)}" fill="#${textColor}"${bold ? ' font-weight="bold"' : ''}${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value)}</text>`
 
     // a value on its own is drawn where the pair would have started
     if (!m.path) {

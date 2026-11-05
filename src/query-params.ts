@@ -19,6 +19,7 @@ import {
   ICON_SIDES,
   TRANSPARENT,
 } from './render.ts'
+import { BADGE_FONTS } from './text.ts'
 
 // ******************************************************************************
 // parseItems
@@ -139,6 +140,9 @@ const styleSchema = zObject({
     zEnum(ICON_SIDES, { error: `must be ${ICON_SIDES.join(' or ')}` })
   ),
   radius: zOptional(zBoundedParam(0, 32)),
+  font: zOptional(
+    zEnum(BADGE_FONTS, { error: `must be one of ${BADGE_FONTS.join(', ')}` })
+  ),
 })
 
 /**

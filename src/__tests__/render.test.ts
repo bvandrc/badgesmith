@@ -218,6 +218,41 @@ describe('renderBadge', () => {
     )
   })
 
+  test('font draws in that face, and measures against its own metrics', () => {
+    const items = [{ value: 'react-toolkit' }]
+    const verdana = renderBadge({ items })
+    const arial = renderBadge({ items, font: 'arial' })
+
+    assert.match(verdana, /font-family="Verdana,DejaVu Sans,sans-serif"/)
+    // the clone carrying the same advance widths is named before the generic,
+    // so a reader without Arial still gets the metrics the table holds
+    assert.match(
+      arial,
+      /font-family="Arial,Liberation Sans,Helvetica,sans-serif"/
+    )
+    // the pill is sized to the face it is drawn in, not to the default's
+    assert.ok(
+      widthOf(arial) < widthOf(verdana),
+      `expected arial (${widthOf(arial)}) to measure narrower than verdana (${widthOf(verdana)})`
+    )
+  })
+
+  test('font centres the text on its own cap height', () => {
+    const items = [{ value: '370' }]
+    const baselineOf = (svg: string) =>
+      Number(svg.match(/<text[^>]*y="([\d.]+)"/)?.[1])
+
+    // the baseline sits half a cap height below the middle of the box, so a
+    // face whose capitals are shorter puts it nearer that middle
+    const verdana = baselineOf(renderBadge({ items }))
+    const times = baselineOf(renderBadge({ items, font: 'times' }))
+    assert.ok(
+      times < verdana,
+      `expected times (${times}) to sit above verdana's baseline (${verdana})`
+    )
+    assert.ok(times > BASE_HEIGHT / 2, 'baseline should stay below the middle')
+  })
+
   test('escapes values rather than emitting raw markup', () => {
     const svg = renderBadge({ items: [{ icon: 'tag', value: '<b>&"' }] })
     assert.doesNotMatch(svg, /<b>/)

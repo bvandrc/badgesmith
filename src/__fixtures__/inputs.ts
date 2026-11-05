@@ -99,6 +99,18 @@ export const TEST_FIXTURE_INPUTS = {
     bold: true,
     underline: true,
   },
+  // another face entirely: its own advance widths set the pill's width and
+  // its own cap height sets the baseline, so this pins both
+  'font-arial': {
+    items: [{ icon: 'git-commit', value: '370' }, { value: 'react-toolkit' }],
+    font: 'arial',
+  },
+  // the bold face of a non-default font, which is measured separately again
+  'font-times-bold': {
+    items: [{ value: 'Bike Ride Tracker' }],
+    font: 'times',
+    bold: true,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

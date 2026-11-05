@@ -83,6 +83,11 @@ export const TEST_FIXTURE_INPUTS = {
   'text-only': {
     items: [{ value: 'repo' }, { icon: 'star', value: '9' }],
   },
+  // an icon drawn nearer its value's size than the height's
+  'icon-scaled': {
+    items: [{ icon: 'file-directory', value: 'repo' }],
+    iconScale: 0.7,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

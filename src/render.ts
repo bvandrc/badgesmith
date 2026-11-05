@@ -56,6 +56,17 @@ export type BadgeStyle = {
    */
   padY?: number
   /**
+   * How large each icon is against its own value, as a fraction of normal.
+   *
+   * 1 leaves an icon filling the height the contents are given, which is
+   * taller than the text beside it; smaller draws it nearer the text's own
+   * size. It cannot go above 1: the icon already fills that height, so a
+   * larger one would run past the badge and be cut off by its edges.
+   *
+   * @default 1
+   */
+  iconScale?: number
+  /**
    * Which side of its value each icon sits on.
    *
    * The badge is the same width either way: only the order within a pair
@@ -126,6 +137,7 @@ export const renderBadge = ({
   padY,
   radius = 0,
   iconSide = 'left',
+  iconScale = 1,
 }: BadgeOptions) => {
   // Contents scale to the room padY leaves rather than to the box, so
   // trimming it grows them instead of cropping the pill. The two branches are
@@ -145,13 +157,15 @@ export const renderBadge = ({
     const icon = item.icon === undefined ? undefined : getIcon(item.icon)
     // octicons are not all square — scale by height and let width follow, so a
     // wide one (logo-github is 49x16) renders undistorted and advances further
-    const iconScale = icon ? iconSize / icon.height : 0
+    // what the icon's own path is drawn at, shrunk by what the caller asked
+    const drawScale = icon ? (iconSize * iconScale) / icon.height : 0
     return {
       slug: item.icon,
       value: item.value,
       path: icon?.path,
-      iconScale,
-      iconWidth: icon ? icon.width * iconScale : 0,
+      drawScale,
+      iconWidth: icon ? icon.width * drawScale : 0,
+      iconHeight: icon ? icon.height * drawScale : 0,
       valueWidth: textWidth(item.value, fontSize),
     }
   })
@@ -165,13 +179,12 @@ export const renderBadge = ({
     ) +
     itemGap * Math.max(measured.length - 1, 0)
 
-  const iconY = (height - iconSize) / 2
   let x = endPad
   const parts: string[] = []
   const baseline = round((height + DIGIT_CAP_RATIO * fontSize) / 2)
   for (const m of measured) {
     const icon = (at: number) =>
-      `<g fill="#${iconColor}" transform="translate(${round(at)} ${round(iconY)}) scale(${round(m.iconScale)})">${m.path}</g>`
+      `<g fill="#${iconColor}" transform="translate(${round(at)} ${round((height - m.iconHeight) / 2)}) scale(${round(m.drawScale)})">${m.path}</g>`
     const value = (at: number) =>
       `<text x="${round(at)}" y="${baseline}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}">${escapeText(m.value)}</text>`
 

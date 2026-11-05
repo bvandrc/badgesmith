@@ -124,6 +124,9 @@ const styleSchema = zObject({
   // under 12 the text no longer fits the pill it is centred in
   height: zOptional(zBoundedParam(12, 64)),
   padY: zOptional(zBoundedParam(0, 32)),
+  // at 1 the icon already fills the height the contents are given, so above
+  // that it would run past the badge and be cut off by its edges
+  iconScale: zOptional(zBoundedParam(0.25, 1)),
   iconSide: zOptional(
     zEnum(ICON_SIDES, { error: `must be ${ICON_SIDES.join(' or ')}` })
   ),

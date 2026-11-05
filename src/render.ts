@@ -56,6 +56,15 @@ export type BadgeStyle = {
    */
   padY?: number
   /**
+   * Draws every value in the bold face.
+   *
+   * Measured against its own metrics, so the pill is the width the heavier
+   * glyphs actually need.
+   *
+   * @default false
+   */
+  bold?: boolean
+  /**
    * Draws a line under every value.
    *
    * Costs nothing in width: an underline does not change what a glyph
@@ -148,6 +157,7 @@ export const renderBadge = ({
   iconSide = 'left',
   iconScale = 1,
   underline = false,
+  bold = false,
 }: BadgeOptions) => {
   // Contents scale to the room padY leaves rather than to the box, so
   // trimming it grows them instead of cropping the pill. The two branches are
@@ -176,7 +186,7 @@ export const renderBadge = ({
       drawScale,
       iconWidth: icon ? icon.width * drawScale : 0,
       iconHeight: icon ? icon.height * drawScale : 0,
-      valueWidth: textWidth(item.value, fontSize),
+      valueWidth: textWidth(item.value, fontSize, bold),
     }
   })
 
@@ -196,7 +206,7 @@ export const renderBadge = ({
     const icon = (at: number) =>
       `<g fill="#${iconColor}" transform="translate(${round(at)} ${round((height - m.iconHeight) / 2)}) scale(${round(m.drawScale)})">${m.path}</g>`
     const value = (at: number) =>
-      `<text x="${round(at)}" y="${baseline}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}"${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value)}</text>`
+      `<text x="${round(at)}" y="${baseline}" font-family="Verdana,DejaVu Sans,sans-serif" font-size="${round(fontSize)}" fill="#${textColor}"${bold ? ' font-weight="bold"' : ''}${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value)}</text>`
 
     // a value on its own is drawn where the pair would have started
     if (!m.path) {

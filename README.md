@@ -34,8 +34,11 @@ Opening the root with no query returns a short HTML page: three live examples, e
 | `padY` | 15% of `height` | 0–32; space above and below the contents, under half of `height` |
 | `iconSide` | `left` | `left` or `right`; which side of its value each icon sits on |
 | `iconScale` | `1` | 0.25–1; how large each icon is against its value |
+| `bold` | `false` | `true` or `false`; draws every value in the bold face |
 | `underline` | `false` | `true` or `false`; draws a line under every value |
 | `radius` | `0` | corner radius; `0` matches shields' flat-square |
+
+`bold=true` draws the values in Verdana's bold face, measured against that face's own metrics — its glyphs advance further than the regular one's, so measuring bold text against regular widths would leave it wider than the pill drawn for it.
 
 `underline=true` draws a line under every value, which costs no width: an underline does not change what a glyph advances by, so the measured text stays the right size. It is a presentation attribute rather than CSS, so GitHub's image proxy serves it intact.
 

@@ -12,6 +12,7 @@ const EXAMPLES = [
   'items=star:1.2k,repo-forked:89&color=1f6feb&iconColor=fff&height=24&radius=6',
   'items=logo-github:49,tag:v2.1.0&radius=10',
   'items=stable,star:9&color=1f6feb',
+  'items=react-toolkit&bold=true&underline=true&color=none&textColor=0969da',
   'items=file-directory:repo&iconScale=0.7&color=none&textColor=4d79b2&iconColor=4d79b2&underline=true',
   'items=git-commit:370,git-pull-request:264&iconSide=right',
   'items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=14&padY=0',

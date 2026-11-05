@@ -93,6 +93,12 @@ export const TEST_FIXTURE_INPUTS = {
     items: [{ icon: 'file-directory', value: 'repo' }],
     underline: true,
   },
+  // bold and underlined, measured against the bold face's own metrics
+  'bold-underlined': {
+    items: [{ value: 'react-toolkit' }],
+    bold: true,
+    underline: true,
+  },
   // markup in a value has to come out escaped, not rendered
   'escaped-value': {
     items: [{ icon: 'tag', value: '<b>&"' }],

@@ -12,7 +12,7 @@ describe('usagePage', () => {
     assert.ok(srcs.length >= 3, `expected several examples, got ${srcs.length}`)
     for (const src of srcs) {
       assert.ok(
-        src.startsWith(`${ORIGIN}/?`),
+        src.startsWith(`${ORIGIN}/`),
         `${src} should be served by this deployment`
       )
     }

@@ -154,28 +154,6 @@ In a README, use markdown or an `<img>` tag — the latter lets you align it:
 <img src="https://badgesmith.bvandrc.workers.dev/github?repo=owner/name" align="right" alt="commits and pull requests">
 ```
 
-## As a package
-
-The renderer is also published to npm, for drawing a badge without the worker: at build time, or behind a server of your own.
-
-```sh
-pnpm add badgesmith
-```
-
-```ts
-import { renderBadge } from 'badgesmith'
-
-const svg = renderBadge({
-  items: [
-    { icon: 'git-commit', value: '370' },
-    { icon: 'git-pull-request', value: '264' },
-  ],
-  height: 18,
-})
-```
-
-`renderBadge` takes `items` plus the same style options as the query params below, typed rather than as strings, and returns the SVG as a string. It does none of the worker's validation: it throws only for an icon that does not exist, which `hasIcon` checks first. The limits on items, value length, and sizes are the worker's, so a caller passing input it does not control applies its own.
-
 ## Why this exists
 
 shields.io supports exactly **one** logo per badge, and hard-codes custom SVG logos to a 14×14 box (`DEFAULT_LOGO_HEIGHT`; the aspect-preserving `logoSize=auto` path only runs for named simple-icons). The PR that would have lifted that, [badges/shields#11093](https://github.com/badges/shields/pull/11093), was closed unmerged.
@@ -253,5 +231,27 @@ Any [octicon](https://primer.style/foundations/icons) slug works — all 408 of 
 An item may be an icon on its own, written with a trailing colon — `items=react:`. It draws to the same box as the badges beside it, so it centres with them, which a bare `<img>` of the same mark cannot: an image sits on the line's baseline instead.
 
 An item may be an icon on its own, written with a trailing colon — `items=shield-check:`. It draws to the same box as the badges beside it, so it centres with them, which a bare `<img>` of the same mark cannot: an image sits on the line's baseline instead.
+
+## As a package
+
+The renderer is also published to npm, for drawing a badge without the worker: at build time, or behind a server of your own.
+
+```sh
+pnpm add badgesmith
+```
+
+```ts
+import { renderBadge } from 'badgesmith'
+
+const svg = renderBadge({
+  items: [
+    { icon: 'git-commit', value: '370' },
+    { icon: 'git-pull-request', value: '264' },
+  ],
+  height: 18,
+})
+```
+
+`renderBadge` takes `items` plus the same style options as the query params above, typed rather than as strings, and returns the SVG as a string. It does none of the worker's validation: it throws only for an icon that does not exist, which `hasIcon` checks first. The limits on items, value length, and sizes are the worker's, so a caller passing input it does not control applies its own.
 
 Internals — why the icon registry and the width table are generated, the constraints the renderer works under, and the development commands — are in [docs/internals.md](./docs/internals.md).

@@ -18,8 +18,8 @@ import type { BadgeItem, BadgeStyle } from './render.ts'
 /**
  * Runs `validate`, reporting what it rejects as the caller's to fix.
  *
- * The limits are the package's as much as the Worker's, so they throw their
- * own error; only here, on the way out of a request, do they become a 400.
+ * The limits are about a badge rather than a request, so they throw their own
+ * error; only here, on the way out of a request, do they become a 400.
  */
 const validateAsBadRequest = <T>(validate: () => T) => {
   try {
@@ -82,9 +82,9 @@ const zNumberParam = zPipe(zString(), zTransform(Number))
  * The appearance params as typed values, shared by every route.
  *
  * Only what the query string cannot say as a string is converted here: the
- * bounds, the colors, and the enums are `validateStyle`'s, which the package
- * applies too. Unrecognised keys are stripped, so a route's own params pass
- * through untouched.
+ * bounds, the colors, and the enums are `validateStyle`'s, which checks them
+ * on the typed values. Unrecognised keys are stripped, so a route's own params
+ * pass through untouched.
  */
 const styleParamsSchema = zObject({
   color: zOptional(zString()),

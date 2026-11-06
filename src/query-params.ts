@@ -21,7 +21,7 @@ import type { BadgeItem, BadgeStyle } from './render.ts'
  * The limits are about a badge rather than a request, so they throw their own
  * error; only here, on the way out of a request, do they become a 400.
  */
-const asBadRequest = <T>(validate: () => T) => {
+const validateAsBadRequest = <T>(validate: () => T) => {
   try {
     return validate()
   } catch (error) {
@@ -62,7 +62,7 @@ export const parseItems = (raw: string | null) => {
       icon === undefined ? { value: value as string } : { icon, value }
     )
   }
-  return asBadRequest(() => validateItems(items))
+  return validateAsBadRequest(() => validateItems(items))
 }
 
 // ******************************************************************************
@@ -108,5 +108,5 @@ export const parseStyle = (params: URLSearchParams): BadgeStyle => {
     const [issue] = parsed.error.issues
     throw new BadRequestError(`${issue.path.join('.')} ${issue.message}`)
   }
-  return asBadRequest(() => validateStyle(parsed.data))
+  return validateAsBadRequest(() => validateStyle(parsed.data))
 }

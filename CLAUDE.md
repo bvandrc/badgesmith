@@ -30,8 +30,6 @@ Conventions live outside this file, synced from https://github.com/bvandrc/bvand
 - @conventions/all.md — practice for every repo: branches, formatting, writing, PR reviews
 - @conventions/npm-publishing.md — releasing, trusted publishing, and the `package.json` publish fields
 
-`playwright.md` exists upstream but is deliberately not synced here: there is no Playwright suite.
-
 ## Commands
 
 - `pnpm dev` — run the worker locally on workerd. `pnpm deploy` — publish it.

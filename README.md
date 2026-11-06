@@ -254,4 +254,16 @@ const svg = renderBadge({
 
 `renderBadge` takes `items` plus the same style options as the query params above, typed rather than as strings, and returns the SVG as a string. It does none of the worker's validation: it throws only for an icon that does not exist, which `hasIcon` checks first. The limits on items, value length, and sizes are the worker's, so a caller passing input it does not control applies its own.
 
-Internals — why the icon registry and the width table are generated, the constraints the renderer works under, and the development commands — are in [docs/internals.md](./docs/internals.md).
+## Development
+
+Issues and pull requests are both welcome. [Open an issue](https://github.com/bvandrc/badgesmith/issues/new) for a bug, a missing icon, or an idea, or send a pull request with the change itself.
+
+```sh
+pnpm install
+pnpm dev       # the worker, locally
+pnpm check     # lint and types
+pnpm test
+pnpm gen:all   # regenerate the README, fixtures, and tables; CI fails if they drift
+```
+
+Why the icon registry and the width table are generated, the constraints the renderer works under, and the rest of the commands are in [docs/internals.md](./docs/internals.md).

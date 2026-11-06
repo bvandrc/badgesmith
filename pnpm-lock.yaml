@@ -7,10 +7,6 @@ settings:
 importers:
 
   .:
-    dependencies:
-      es-toolkit:
-        specifier: ^1
-        version: 1.53.1
     devDependencies:
       '@biomejs/biome':
         specifier: ^2.6
@@ -27,6 +23,9 @@ importers:
       anafanafo:
         specifier: ^2
         version: 2.0.0
+      es-toolkit:
+        specifier: ^1
+        version: 1.53.1
       fontkit:
         specifier: ^2
         version: 2.0.4

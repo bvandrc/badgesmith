@@ -10,7 +10,7 @@ Why this worker is built the way it is, and what to know before changing it. For
 
 The Worker uses two libraries at runtime. `zod/mini` validates the style params. The entry point and the named imports both matter: for this exact schema, `import * as z from 'zod'` measured 93KB gzipped — more than the entire worker — because the namespace barrel defeats tree shaking and drags in a compiler and two JSON-schema processors. `zod/mini` with named imports costs ~9KB gzipped instead. `es-toolkit` supplies `sumBy`, for 113 bytes gzipped.
 
-Only `es-toolkit` is listed under `dependencies`, though. Wrangler bundles whatever the Worker imports whichever list it comes from, so for the Worker the split means nothing; it is the npm package's install list, and the package does not parse query strings, so it does not need `zod`.
+Both are `devDependencies`, though. Wrangler bundles whatever the Worker imports whichever list it comes from, so for the Worker the split means nothing; `dependencies` is the npm package's install list, and the package needs neither. It does not parse query strings, so it has no use for `zod`, and `tsdown` inlines the two `es-toolkit` functions it does use rather than having a consumer install the whole library for them.
 
 ## The npm package
 

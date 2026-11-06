@@ -32,6 +32,14 @@ jobs:
       - name: Test
         run: pnpm test
 
+      # what the release would publish: the build, then the packed tarball's
+      # contents, so a file missing from `files` fails here rather than on npm
+      - name: Package builds
+        run: |
+          pnpm build
+          pnpm pack --dry-run
+          node -e "import('./dist/index.mjs').then(({ renderBadge }) => renderBadge({ items: [{ icon: 'star', value: '1' }] }))"
+
       - name: Generated files are current
         run: |
           pnpm gen:all

@@ -16,6 +16,7 @@ import { hasIcon } from './icons.ts'
 import {
   BASE_HEIGHT,
   type BadgeItem,
+  type BadgeOptions,
   type BadgeStyle,
   contentsHeight,
   ICON_SIDES,
@@ -27,7 +28,7 @@ import { BADGE_FONTS, maxFontSize } from './text.ts'
  * Badge options that would draw something broken, clipped, or unbounded.
  *
  * Its message names the option and the reason, written for whoever supplied
- * the value, since the query parser sends it back as the body of a 400.
+ * the value, since the Worker sends it back as the body of a 400.
  */
 export class InvalidBadgeError extends Error {}
 
@@ -175,3 +176,12 @@ export const validateStyle = (style: unknown): BadgeStyle => {
   }
   return parsed.data
 }
+
+/** Checks a badge's items and style together, as `renderBadge` takes them. */
+export const validateBadgeOptions = ({
+  items,
+  ...style
+}: BadgeOptions): BadgeOptions => ({
+  ...validateStyle(style),
+  items: validateItems(items),
+})

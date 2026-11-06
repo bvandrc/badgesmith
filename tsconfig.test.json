@@ -7,6 +7,6 @@
     "jsx": "react-jsx",
     "jsxImportSource": "preact"
   },
-  "include": ["src/**/*.test.ts", "scripts", "site"],
+  "include": ["src/**/*.test.ts", "scripts", "site", "tsdown.config.ts"],
   "exclude": []
 }

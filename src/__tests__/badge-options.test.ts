@@ -3,6 +3,7 @@ import { describe, test } from 'node:test'
 
 import {
   InvalidBadgeError,
+  validateBadgeOptions,
   validateItems,
   validateStyle,
 } from '../badge-options.ts'
@@ -232,6 +233,20 @@ describe('validateStyle', () => {
     rejects(
       () => validateStyle({ height: 20, padY: 0, fontSize: 18 }),
       'fontSize must be at most 15.84 for verdana in this box — raise height, or lower padY'
+    )
+  })
+})
+
+describe('validateBadgeOptions', () => {
+  test('checks the items and the style together', () => {
+    assert.deepEqual(
+      validateBadgeOptions({ items: [{ icon: 'star' }], color: '#fff' }),
+      { items: [{ icon: 'star' }], color: 'fff' }
+    )
+    rejects(() => validateBadgeOptions({ items: [] }), 'at least one item')
+    rejects(
+      () => validateBadgeOptions({ items: [{ icon: 'star' }], height: 99 }),
+      'height must be a number between 12 and 64'
     )
   })
 })

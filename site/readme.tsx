@@ -117,5 +117,39 @@ An item may be an icon on its own, written with a trailing colon — \`items=rea
 
 An item may be an icon on its own, written with a trailing colon — \`items=shield-check:\`. It draws to the same box as the badges beside it, so it centres with them, which a bare \`<img>\` of the same mark cannot: an image sits on the line's baseline instead.
 
-Internals — why the icon registry and the width table are generated, the constraints the renderer works under, and the development commands — are in [docs/internals.md](./docs/internals.md).
+## As a package
+
+The renderer is also published to npm, for drawing a badge without the worker: at build time, or behind a server of your own.
+
+${codeBlock('pnpm add badgesmith', 'sh')}
+
+${codeBlock(
+  `import { renderBadge } from 'badgesmith'
+
+const svg = renderBadge({
+  items: [
+    { icon: 'git-commit', value: '370' },
+    { icon: 'git-pull-request', value: '264' },
+  ],
+  height: 18,
+})`,
+  'ts'
+)}
+
+\`renderBadge\` takes \`items\` plus the same style options as the query params above, typed rather than as strings, and returns the SVG as a string. It holds them to the same limits the worker does, and throws an \`InvalidBadgeError\` naming the option and the reason for any it cannot draw. \`hasIcon\` checks a slug before you pass it.
+
+## Development
+
+Issues and pull requests are both welcome. [Open an issue](https://github.com/bvandrc/badgesmith/issues/new) for a bug, a missing icon, or an idea, or send a pull request with the change itself.
+
+${codeBlock(
+  `pnpm install
+pnpm dev       # the worker, locally
+pnpm check     # lint and types
+pnpm test
+pnpm gen:all   # regenerate the README, fixtures, and tables; CI fails if they drift`,
+  'sh'
+)}
+
+Why the icon registry and the width table are generated, the constraints the renderer works under, and the rest of the commands are in [docs/internals.md](./docs/internals.md).
 `

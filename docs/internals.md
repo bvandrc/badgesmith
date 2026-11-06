@@ -8,7 +8,21 @@ Why this worker is built the way it is, and what to know before changing it. For
 
 ## Runtime dependencies
 
-There are two runtime dependencies. `zod/mini` validates the style params. The entry point and the named imports both matter: for this exact schema, `import * as z from 'zod'` measured 93KB gzipped — more than the entire worker — because the namespace barrel defeats tree shaking and drags in a compiler and two JSON-schema processors. `zod/mini` with named imports costs ~9KB gzipped instead. `es-toolkit` supplies `sumBy`, for 113 bytes gzipped.
+The Worker uses two libraries at runtime. `zod/mini` validates the style params. The entry point and the named imports both matter: for this exact schema, `import * as z from 'zod'` measured 93KB gzipped — more than the entire worker — because the namespace barrel defeats tree shaking and drags in a compiler and two JSON-schema processors. `zod/mini` with named imports costs ~9KB gzipped instead. `es-toolkit` supplies `sumBy`, for 113 bytes gzipped.
+
+Both are `devDependencies`, though. Wrangler bundles whatever the Worker imports whichever list it comes from, so for the Worker the split means nothing; `dependencies` is the npm package's install list, and the package installs nothing. It uses both, and `tsdown` inlines them: the two `es-toolkit` functions, and the `zod/mini` named imports the validator makes, about 12KB gzipped against the icon table's ~190KB.
+
+## The npm package
+
+The renderer is published to npm as `badgesmith`, built by `tsdown` from `src/library.ts` into `dist/`. That entry is the package's public API, and semver follows it: the validating renderer and the `InvalidBadgeError` it throws, the item and style types, and `hasIcon`. The Worker, the query parser, and the providers stay out. A caller who needs the Worker's limits has the Worker.
+
+The limits live in `src/badge-options.ts`, checked on typed values, and both callers apply the same ones. The package's `renderBadge` validates before it draws, throwing `InvalidBadgeError`; the Worker's query parser converts the strings to types, runs the same validation so a bad request fails before any lookup, and turns that error into a 400. The internal renderer trusts what it is given, which is why nothing reaches it unvalidated: a color is written into an attribute, and only validation stands between it and the markup.
+
+Removing an icon slug is a breaking change, since `hasIcon` and `renderBadge` both answer for it. Octicons occasionally drops one, and Simple Icons removes brands in its own majors, so a bump to either that takes a slug away ships as a badgesmith major — `pnpm gen:icons` and the diff to `src/generated/icons.ts` show whether it did. Adding a slug is a minor; a change to how a badge is drawn, such as a corrected width, is a patch, since callers depend on the badge looking right rather than on its bytes.
+
+The bundle carries the whole icon registry, since `renderBadge` looks icons up by slug at runtime and a bundler cannot know which slugs will be asked for. `LICENSE` carries the Octicons MIT notice and the Simple Icons terms, because the package redistributes their paths.
+
+Releasing follows [the npm publishing conventions](../conventions/npm-publishing.md): bump `version`, merge, and publish a GitHub release tagged `v<version>`. `release.yml` stages it through trusted publishing with provenance, and it goes live once approved on npmjs.com. CI's **Package builds** step builds and packs it on every pull request, so a broken build or a missing file shows up before a release does.
 
 ## Providers
 
@@ -69,5 +83,6 @@ pnpm gen:svg     # sample.svg and the test fixtures, from the renderer
 pnpm gen:pages   # README.md and src/generated/usage-page.ts, from site/
 pnpm check       # biome + tsc, no tests
 pnpm e2e         # hit a running worker: BASE_URL=http://localhost:8787 pnpm e2e
+pnpm build       # dist/, the npm package, from src/library.ts
 pnpm deploy
 ```

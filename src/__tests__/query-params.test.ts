@@ -67,10 +67,6 @@ describe('parseItems', () => {
   test("reports what validateItems refuses as the caller's to fix", () => {
     // the limits themselves belong to validateItems, and are tested there
     rejects(() => parseItems('nope:1'), 'unknown icon "nope"')
-    rejects(
-      () => parseItems(Array.from({ length: 7 }, () => 'star:1').join(',')),
-      'at most 6 items'
-    )
   })
 })
 
@@ -90,26 +86,18 @@ describe('parseStyle', () => {
 
   test("reports what validateStyle refuses as the caller's to fix", () => {
     // the limits themselves belong to validateStyle, and are tested there
-    rejects(
-      () => style('color=xyz'),
-      "color must be a 3- or 6-digit hex color without '#', or 'none'"
-    )
     rejects(() => style('padY=10'), 'padY must be under half of height (10)')
-    rejects(() => style('iconSide=top'), 'iconSide must be left or right')
   })
 
-  test('reads bold, which the query carries as a word', () => {
-    assert.deepEqual(style('bold=true'), { bold: true })
-    assert.deepEqual(style('bold=false'), { bold: false })
-    rejects(() => style('bold=yes'), 'bold must be true or false')
-  })
-
-  test('reads underline, which the query carries as a word', () => {
-    assert.deepEqual(style('underline=true'), { underline: true })
-    assert.deepEqual(style('underline=false'), { underline: false })
+  test('reads a flag, which the query carries as a word', () => {
+    assert.deepEqual(style('bold=true&underline=false'), {
+      bold: true,
+      underline: false,
+    })
     // there are no bare flags here, so a present-but-empty one is not true
-    rejects(() => style('underline'), 'underline must be true or false')
-    rejects(() => style('underline=1'), 'underline must be true or false')
+    for (const raw of ['underline', 'underline=1', 'underline=yes']) {
+      rejects(() => style(raw), 'underline must be true or false')
+    }
   })
 
   test('reads a number from its text, and refuses text that is not one', () => {

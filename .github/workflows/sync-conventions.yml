@@ -13,4 +13,4 @@ jobs:
   sync:
     uses: bvandrc/bvandrc-conventions/.github/workflows/sync.yml@main
     with:
-      files: typescript.md ts-testing-all.md ts-unit-testing.md react.md all.md biome.base.jsonc
+      files: typescript.md ts-testing-all.md ts-unit-testing.md react.md all.md npm-publishing.md biome.base.jsonc

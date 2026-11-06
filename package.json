@@ -1,12 +1,13 @@
 {
   "name": "badgesmith",
-  "version": "1.0.0",
-  "private": true,
+  "version": "0.1.0",
   "description": "Renders several icon/value pairs as a single SVG badge",
   "keywords": [
     "badge",
     "svg",
     "octicons",
+    "simple-icons",
+    "shields",
     "cloudflare-workers"
   ],
   "homepage": "https://github.com/bvandrc/badgesmith",
@@ -20,8 +21,24 @@
   "author": "Blake Vandercar",
   "license": "ISC",
   "type": "module",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.mts",
+      "default": "./dist/index.mjs"
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
   "scripts": {
     "__c0": "====================[ Build & Development ]======================",
+    "prepublishOnly": "pnpm check && pnpm test && pnpm build",
+    "build": "tsdown",
     "dev": "wrangler dev",
     "deploy": "wrangler deploy",
     "gen:all": "pnpm gen:icons && pnpm gen:widths && pnpm gen:svg && pnpm gen:pages",
@@ -38,8 +55,7 @@
     "e2e": "node --experimental-strip-types scripts/e2e.ts"
   },
   "dependencies": {
-    "es-toolkit": "^1",
-    "zod": "^4"
+    "es-toolkit": "^1"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6",
@@ -51,9 +67,14 @@
     "preact": "^11",
     "preact-render-to-string": "^6",
     "simple-icons": "^16",
+    "tsdown": "^0.23",
     "tsx": "^4",
     "type-fest": "^5",
     "typescript": "^7",
-    "wrangler": "^4"
+    "wrangler": "^4",
+    "zod": "^4"
+  },
+  "engines": {
+    "node": ">=20"
   }
 }

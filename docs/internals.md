@@ -8,7 +8,19 @@ Why this worker is built the way it is, and what to know before changing it. For
 
 ## Runtime dependencies
 
-There are two runtime dependencies. `zod/mini` validates the style params. The entry point and the named imports both matter: for this exact schema, `import * as z from 'zod'` measured 93KB gzipped — more than the entire worker — because the namespace barrel defeats tree shaking and drags in a compiler and two JSON-schema processors. `zod/mini` with named imports costs ~9KB gzipped instead. `es-toolkit` supplies `sumBy`, for 113 bytes gzipped.
+The Worker uses two libraries at runtime. `zod/mini` validates the style params. The entry point and the named imports both matter: for this exact schema, `import * as z from 'zod'` measured 93KB gzipped — more than the entire worker — because the namespace barrel defeats tree shaking and drags in a compiler and two JSON-schema processors. `zod/mini` with named imports costs ~9KB gzipped instead. `es-toolkit` supplies `sumBy`, for 113 bytes gzipped.
+
+Only `es-toolkit` is listed under `dependencies`, though. Wrangler bundles whatever the Worker imports whichever list it comes from, so for the Worker the split means nothing; it is the npm package's install list, and the package does not parse query strings, so it does not need `zod`.
+
+## The npm package
+
+The renderer is published to npm as `badgesmith`, built by `tsdown` from `src/library.ts` into `dist/`. That entry is the package's public API, and semver follows it: the renderer, the item and style types, and `hasIcon`. The Worker, the query parser, and the providers stay out. A caller who needs the Worker's limits has the Worker.
+
+Because a package caller reaches `renderBadge` without the query parser in front of it, the renderer escapes the colours it writes into attributes rather than trusting them to be hex. The bounds on sizes and counts are still only the parser's: a caller passing input it does not control applies its own.
+
+The bundle carries the whole icon registry, since `renderBadge` looks icons up by slug at runtime and a bundler cannot know which slugs will be asked for. `LICENSE` carries the Octicons MIT notice and the Simple Icons terms, because the package redistributes their paths.
+
+Releasing follows [the npm publishing conventions](../conventions/npm-publishing.md): bump `version`, merge, and publish a GitHub release tagged `v<version>`. `release.yml` stages it through trusted publishing with provenance, and it goes live once approved on npmjs.com. CI's **Package builds** step builds and packs it on every pull request, so a broken build or a missing file shows up before a release does.
 
 ## Providers
 
@@ -69,5 +81,6 @@ pnpm gen:svg     # sample.svg and the test fixtures, from the renderer
 pnpm gen:pages   # README.md and src/generated/usage-page.ts, from site/
 pnpm check       # biome + tsc, no tests
 pnpm e2e         # hit a running worker: BASE_URL=http://localhost:8787 pnpm e2e
+pnpm build       # dist/, the npm package, from src/library.ts
 pnpm deploy
 ```

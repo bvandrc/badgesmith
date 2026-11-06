@@ -326,6 +326,19 @@ describe('renderBadge', () => {
     assert.match(svg, /&#60;b&#62;&#38;&#34;/)
   })
 
+  test('escapes colours, which a package caller passes unchecked', () => {
+    const ATTACK = '"/><script>alert(1)</script><x a="'
+    const svg = renderBadge({
+      items: [{ icon: 'tag', value: '1' }],
+      color: ATTACK,
+      iconColor: ATTACK,
+      textColor: ATTACK,
+    })
+    assert.doesNotMatch(svg, /<script>/)
+    // one escaped copy per attribute: the background, the icon, and the text
+    assert.equal(svg.match(/fill="#&#34;\/&#62;&#60;script&#62;/g)?.length, 3)
+  })
+
   test('rejects an unknown icon', () => {
     assert.throws(
       () => renderBadge({ items: [{ icon: 'nope', value: '1' }] }),

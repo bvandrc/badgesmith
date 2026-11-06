@@ -195,6 +195,11 @@ export const renderBadge = ({
   font = 'verdana',
   fontSize: fontSizeOverride,
 }: BadgeOptions) => {
+  // the Worker accepts only hex here, but a package caller reaches this
+  // directly, so the colours are escaped before they land in an attribute
+  const [fill, iconFill, textFill] = [color, iconColor, textColor].map(
+    escapeText
+  )
   // Contents scale to the room padY leaves rather than to the box, so
   // trimming it grows them instead of cropping the pill. The two branches are
   // algebraically the same at the default padding but not bit for bit — the
@@ -253,11 +258,11 @@ export const renderBadge = ({
   const baseline = round((height + digitCapRatio(font) * fontSize) / 2)
   for (const m of measured) {
     const icon = (at: number) =>
-      `<g fill="#${iconColor}" transform="translate(${round(at)} ${round((height - m.iconHeight) / 2)}) scale(${round(m.drawScale)})">${m.path}</g>`
+      `<g fill="#${iconFill}" transform="translate(${round(at)} ${round((height - m.iconHeight) / 2)}) scale(${round(m.drawScale)})">${m.path}</g>`
     // only ever called for an item that has one; the fallback is for the
     // compiler, which cannot see that from here
     const value = (at: number) =>
-      `<text x="${round(at)}" y="${baseline}" font-family="${fontFamily(font)}" font-size="${round(fontSize)}" fill="#${textColor}"${bold ? ' font-weight="bold"' : ''}${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value ?? '')}</text>`
+      `<text x="${round(at)}" y="${baseline}" font-family="${fontFamily(font)}" font-size="${round(fontSize)}" fill="#${textFill}"${bold ? ' font-weight="bold"' : ''}${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value ?? '')}</text>`
 
     // either on its own is drawn where the pair would have started
     if (!m.path) {
@@ -299,6 +304,6 @@ export const renderBadge = ({
   const background =
     color === TRANSPARENT
       ? ''
-      : `<rect width="${w}" height="${round(height)}" rx="${round(radius)}" fill="#${color}"/>`
+      : `<rect width="${w}" height="${round(height)}" rx="${round(radius)}" fill="#${fill}"/>`
   return `<svg xmlns="http://www.w3.org/2000/svg" width="${w}" height="${round(height)}" viewBox="0 0 ${w} ${round(height)}" role="img" aria-label="${escapeText(label)}">${background}${parts.join('')}</svg>`
 }

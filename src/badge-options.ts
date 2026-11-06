@@ -63,7 +63,7 @@ export const validateItems = (items: BadgeItem[]) => {
     }
     if (icon !== undefined && !hasIcon(icon)) {
       throw new InvalidBadgeError(
-        `unknown icon "${icon}" — any octicon slug works, plus the brand marks listed at https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts`
+        `unknown icon "${icon}" — any octicon slug works, plus the brand marks listed at https://github.com/bvandrc/badgesmith/blob/main/scripts/simple-icon-slugs.ts. Want one that is missing? Open an issue or a pull request at https://github.com/bvandrc/badgesmith`
       )
     }
     // an empty value draws a gap with nothing in it; an icon alone omits it

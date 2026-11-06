@@ -136,7 +136,7 @@ const svg = renderBadge({
   'ts'
 )}
 
-\`renderBadge\` takes \`items\` plus the same style options as the query params above, typed rather than as strings, and returns the SVG as a string. It does none of the worker's validation: it throws only for an icon that does not exist, which \`hasIcon\` checks first. The limits on items, value length, and sizes are the worker's, so a caller passing input it does not control applies its own.
+\`renderBadge\` takes \`items\` plus the same style options as the query params above, typed rather than as strings, and returns the SVG as a string. It holds them to the same limits the worker does, and throws an \`InvalidBadgeError\` naming the option and the reason for any it cannot draw. \`hasIcon\` checks a slug before you pass it.
 
 ## Development
 

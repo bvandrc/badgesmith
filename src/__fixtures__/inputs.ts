@@ -93,6 +93,18 @@ export const TEST_FIXTURE_INPUTS = {
     items: [{ icon: 'file-directory', value: 'repo' }],
     underline: true,
   },
+  // a line through every value, which costs the badge no width either
+  struck: {
+    items: [{ icon: 'file-directory', value: 'repo' }],
+    strikethrough: true,
+  },
+  // both lines at once, which share one attribute rather than one replacing
+  // the other
+  'underlined-struck': {
+    items: [{ value: 'react-toolkit' }],
+    underline: true,
+    strikethrough: true,
+  },
   // bold and underlined, measured against the bold face's own metrics
   'bold-underlined': {
     items: [{ value: 'react-toolkit' }],

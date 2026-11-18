@@ -69,6 +69,7 @@ Opening the root with no query returns an HTML page of the same examples as abov
 | \`iconScale\` | \`1\` | 0.25–1; how large each icon is against its value |
 | \`bold\` | \`false\` | \`true\` or \`false\`; draws every value in the bold face |
 | \`underline\` | \`false\` | \`true\` or \`false\`; draws a line under every value |
+| \`strikethrough\` | \`false\` | \`true\` or \`false\`; draws a line through every value |
 | \`radius\` | \`0\` | corner radius; \`0\` matches shields' flat-square |
 | \`font\` | \`verdana\` | \`verdana\`, \`arial\`, \`times\` or \`courier\` |
 | \`fontSize\` | from the box | text size in px, independent of \`height\` |
@@ -76,6 +77,8 @@ Opening the root with no query returns an HTML page of the same examples as abov
 \`bold=true\` draws the values in Verdana's bold face, measured against that face's own metrics — its glyphs advance further than the regular one's, so measuring bold text against regular widths would leave it wider than the pill drawn for it.
 
 \`underline=true\` draws a line under every value, which costs no width: an underline does not change what a glyph advances by, so the measured text stays the right size. It is a presentation attribute rather than CSS, so GitHub's image proxy serves it intact.
+
+\`strikethrough=true\` draws a line through every value instead, at the same cost: none. With \`underline=true\` as well, both lines are drawn.
 
 \`font\` picks the face every value is drawn in. Only families a reader already has, since the proxy serving these SVGs forbids fetching a font — and only ones whose advance widths are known, because the pill has to be sized before it is drawn. Each face is measured against its own metrics and centred on its own cap height, so the text fits and sits level whichever is chosen. The stacks name a metric-compatible clone after the family itself (\`Arial,Liberation Sans,Helvetica,sans-serif\`), so a reader without the family still gets the widths the table holds.
 

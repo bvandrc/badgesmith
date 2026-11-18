@@ -130,6 +130,7 @@ const styleSchema = zObject({
   iconScale: zOptional(zBounded(0.25, 1)),
   bold: zOptional(zFlag),
   underline: zOptional(zFlag),
+  strikethrough: zOptional(zFlag),
   iconSide: zOptional(
     zEnum(ICON_SIDES, { error: `must be ${ICON_SIDES.join(' or ')}` })
   ),

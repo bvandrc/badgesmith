@@ -199,6 +199,27 @@ describe('renderBadge', () => {
     assert.equal(widthOf(lined), widthOf(plain))
   })
 
+  test('strikethrough crosses out the text without costing width', () => {
+    const items = [
+      { icon: 'star', value: '12' },
+      { icon: 'tag', value: 'v1' },
+    ]
+    const plain = renderBadge({ items })
+    const struck = renderBadge({ items, strikethrough: true })
+
+    // every value, not just the first
+    assert.equal(struck.match(/text-decoration="line-through"/g)?.length, 2)
+    assert.equal(widthOf(struck), widthOf(plain))
+
+    // with an underline too, both lines are drawn: two attributes on one
+    // element would be invalid, and one replacing the other would drop a line
+    const both = renderBadge({ items, underline: true, strikethrough: true })
+    assert.equal(
+      both.match(/text-decoration="underline line-through"/g)?.length,
+      2
+    )
+  })
+
   test('bold marks every value, and is measured against its own face', () => {
     const items = [
       { icon: 'star', value: '12' },

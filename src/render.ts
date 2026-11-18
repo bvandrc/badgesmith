@@ -82,6 +82,15 @@ export type BadgeStyle = {
    */
   underline?: boolean
   /**
+   * Draws a line through every value, as for something no longer on offer.
+   *
+   * Costs nothing in width, for the same reason an underline does. Combines
+   * with `underline`, drawing both lines.
+   *
+   * @default false
+   */
+  strikethrough?: boolean
+  /**
    * How large each icon is against its own value, as a fraction of normal.
    *
    * 1 leaves an icon filling the height the contents are given, which is
@@ -191,6 +200,7 @@ export const renderBadge = ({
   iconSide = 'left',
   iconScale = 1,
   underline = false,
+  strikethrough = false,
   bold = false,
   font = 'verdana',
   fontSize: fontSizeOverride,
@@ -248,6 +258,15 @@ export const renderBadge = ({
     ) +
     itemGap * Math.max(measured.length - 1, 0)
 
+  // one attribute holds every line a value carries, so asking for both draws
+  // both rather than the later one replacing the earlier
+  const decorations = [
+    underline && 'underline',
+    strikethrough && 'line-through',
+  ].filter(Boolean)
+  const decoration =
+    decorations.length > 0 ? ` text-decoration="${decorations.join(' ')}"` : ''
+
   let x = endPad
   const parts: string[] = []
   const baseline = round((height + digitCapRatio(font) * fontSize) / 2)
@@ -257,7 +276,7 @@ export const renderBadge = ({
     // only ever called for an item that has one; the fallback is for the
     // compiler, which cannot see that from here
     const value = (at: number) =>
-      `<text x="${round(at)}" y="${baseline}" font-family="${fontFamily(font)}" font-size="${round(fontSize)}" fill="#${textColor}"${bold ? ' font-weight="bold"' : ''}${underline ? ' text-decoration="underline"' : ''}>${escapeText(m.value ?? '')}</text>`
+      `<text x="${round(at)}" y="${baseline}" font-family="${fontFamily(font)}" font-size="${round(fontSize)}" fill="#${textColor}"${bold ? ' font-weight="bold"' : ''}${decoration}>${escapeText(m.value ?? '')}</text>`
 
     // either on its own is drawn where the pair would have started
     if (!m.path) {

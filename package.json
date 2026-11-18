@@ -1,6 +1,6 @@
 {
   "name": "badgesmith",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "Renders several icon/value pairs as a single SVG badge",
   "keywords": [
     "badge",

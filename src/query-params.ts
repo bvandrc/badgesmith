@@ -95,6 +95,7 @@ const styleParamsSchema = zObject({
   iconScale: zOptional(zNumberParam),
   bold: zOptional(zFlagParam),
   underline: zOptional(zFlagParam),
+  strikethrough: zOptional(zFlagParam),
   iconSide: zOptional(zString()),
   radius: zOptional(zNumberParam),
   font: zOptional(zString()),

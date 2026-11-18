@@ -90,9 +90,10 @@ describe('parseStyle', () => {
   })
 
   test('reads a flag, which the query carries as a word', () => {
-    assert.deepEqual(style('bold=true&underline=false'), {
+    assert.deepEqual(style('bold=true&underline=false&strikethrough=true'), {
       bold: true,
       underline: false,
+      strikethrough: true,
     })
     // there are no bare flags here, so a present-but-empty one is not true
     for (const raw of ['underline', 'underline=1', 'underline=yes']) {

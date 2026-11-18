@@ -79,6 +79,10 @@ export const EXAMPLES: readonly Example[] = [
     path: '/?items=react-toolkit&bold=true&underline=true&color=none&textColor=0969da',
   },
   {
+    title: 'Crossed out, for a link that no longer goes anywhere',
+    path: '/?items=file-directory:repo&strikethrough=true&color=none&textColor=6E7681&iconColor=6E7681',
+  },
+  {
     title: 'No background, compact, legible on light and dark themes',
     path: '/?items=git-commit:547,git-pull-request:0&color=none&iconColor=6E7681&textColor=6E7681&height=14&padY=0',
   },

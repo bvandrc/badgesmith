@@ -10,7 +10,7 @@ import { parseItems, parseStyle } from '../query-params.ts'
  * Matched as a substring, so these do not break when an example or a link in
  * a message is reworded — only when the reason itself changes.
  */
-const rejects = (fn: () => unknown, text: string) =>
+const assertRejects = (fn: () => unknown, text: string) =>
   assert.throws(
     fn,
     (error: unknown) =>
@@ -39,8 +39,8 @@ describe('parseItems', () => {
   })
 
   test('items is required', () => {
-    rejects(() => parseItems(null), 'items is required')
-    rejects(() => parseItems(''), 'items is required')
+    assertRejects(() => parseItems(null), 'items is required')
+    assertRejects(() => parseItems(''), 'items is required')
   })
 
   test('reads an icon on its own, written with a trailing colon', () => {
@@ -57,7 +57,7 @@ describe('parseItems', () => {
     // a trailing colon is an icon on its own, so what is left is a leading
     // one, which names no icon, and a second colon, which names nothing
     for (const raw of [':12', ':', 'star:1:2']) {
-      rejects(
+      assertRejects(
         () => parseItems(raw),
         `malformed item "${raw}" — expected icon:value, icon: alone, or value alone`
       )
@@ -66,7 +66,7 @@ describe('parseItems', () => {
 
   test("reports what validateItems refuses as the caller's to fix", () => {
     // the limits themselves belong to validateItems, and are tested there
-    rejects(() => parseItems('nope:1'), 'unknown icon "nope"')
+    assertRejects(() => parseItems('nope:1'), 'unknown icon "nope"')
   })
 })
 
@@ -86,7 +86,10 @@ describe('parseStyle', () => {
 
   test("reports what validateStyle refuses as the caller's to fix", () => {
     // the limits themselves belong to validateStyle, and are tested there
-    rejects(() => style('padY=10'), 'padY must be under half of height (10)')
+    assertRejects(
+      () => style('padY=10'),
+      'padY must be under half of height (10)'
+    )
   })
 
   test('reads a flag, which the query carries as a word', () => {
@@ -97,7 +100,7 @@ describe('parseStyle', () => {
     })
     // there are no bare flags here, so a present-but-empty one is not true
     for (const raw of ['underline', 'underline=1', 'underline=yes']) {
-      rejects(() => style(raw), 'underline must be true or false')
+      assertRejects(() => style(raw), 'underline must be true or false')
     }
   })
 
@@ -108,7 +111,7 @@ describe('parseStyle', () => {
     })
     // NaN, and the 0 an empty param reads as, both fall outside the range
     for (const raw of ['abc', '']) {
-      rejects(
+      assertRejects(
         () => style(`height=${raw}`),
         'height must be a number between 12 and 64'
       )

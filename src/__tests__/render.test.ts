@@ -6,15 +6,15 @@ import { SAMPLE_INPUT, TEST_FIXTURE_INPUTS } from '../__fixtures__/inputs.ts'
 import { getIcon } from '../icons.ts'
 import { BASE_HEIGHT, renderBadge, TRANSPARENT } from '../render.ts'
 
-const read = (path: string) =>
+const readFixture = (path: string) =>
   readFileSync(new URL(path, import.meta.url), 'utf8')
 
-const round = (n: number) => Number(n.toFixed(2))
+const roundToHundredths = (n: number) => Number(n.toFixed(2))
 
-const stale = (file: string) =>
+const getStaleMessage = (file: string) =>
   `${file} differs — run \`pnpm gen:svg\` if the change is intended`
 
-const widthOf = (svg: string) =>
+const getWidth = (svg: string) =>
   Number(svg.match(/^<svg[^>]*width="([\d.]+)"/)?.[1])
 
 describe('committed SVGs', () => {
@@ -24,8 +24,8 @@ describe('committed SVGs', () => {
     test(`renders the ${name} fixture byte for byte`, () => {
       assert.equal(
         `${renderBadge(options)}\n`,
-        read(`../__fixtures__/${name}.svg`),
-        stale(`${name}.svg`)
+        readFixture(`../__fixtures__/${name}.svg`),
+        getStaleMessage(`${name}.svg`)
       )
     })
   }
@@ -34,8 +34,8 @@ describe('committed SVGs', () => {
   test('renders sample.svg byte for byte', () => {
     assert.equal(
       `${renderBadge(SAMPLE_INPUT)}\n`,
-      read('../../sample.svg'),
-      stale('sample.svg')
+      readFixture('../../sample.svg'),
+      getStaleMessage('sample.svg')
     )
   })
 })
@@ -69,7 +69,7 @@ describe('renderBadge', () => {
 
   test('width grows with the number of characters', () => {
     const widths = ['7', '370', '12345'].map((value) =>
-      widthOf(renderBadge({ items: [{ icon: 'git-commit', value }] }))
+      getWidth(renderBadge({ items: [{ icon: 'git-commit', value }] }))
     )
     assert.ok(widths[0] < widths[1], `${widths[0]} < ${widths[1]}`)
     assert.ok(widths[1] < widths[2], `${widths[1]} < ${widths[2]}`)
@@ -82,8 +82,8 @@ describe('renderBadge', () => {
   test('scales with height', () => {
     const items = [{ icon: 'git-commit', value: '370' }]
     assert.ok(
-      widthOf(renderBadge({ items, height: 40 })) >
-        widthOf(renderBadge({ items, height: 20 }))
+      getWidth(renderBadge({ items, height: 40 })) >
+        getWidth(renderBadge({ items, height: 20 }))
     )
     assert.match(renderBadge({ items, height: 18 }), /height="18"/)
   })
@@ -94,8 +94,8 @@ describe('renderBadge', () => {
     const wide = renderBadge({ items: [{ icon: 'logo-github', value: '1' }] })
     const square = renderBadge({ items: [{ icon: 'star', value: '1' }] })
     assert.ok(
-      widthOf(wide) > widthOf(square) + 20,
-      `${widthOf(wide)} should far exceed ${widthOf(square)}`
+      getWidth(wide) > getWidth(square) + 20,
+      `${getWidth(wide)} should far exceed ${getWidth(square)}`
     )
     const scale = wide.match(/scale\(([\d.]+)\)/)?.[1]
     assert.equal(scale, square.match(/scale\(([\d.]+)\)/)?.[1], 'uniform scale')
@@ -141,7 +141,7 @@ describe('renderBadge', () => {
     // the pair occupies the same run either way, so the box cannot move.
     // Only the boundary inside the pair does, since an icon and its value
     // are not the same width.
-    assert.equal(widthOf(right), widthOf(left))
+    assert.equal(getWidth(right), getWidth(left))
   })
 
   test('a value with no icon draws none, and takes no room for one', () => {
@@ -156,7 +156,10 @@ describe('renderBadge', () => {
     // icon: an absent icon leaves no space behind
     const star = getIcon('star')
     const iconWidth = (star.width / star.height) * 14
-    assert.equal(widthOf(alone), round(widthOf(withIcon) - iconWidth - 4))
+    assert.equal(
+      getWidth(alone),
+      roundToHundredths(getWidth(withIcon) - iconWidth - 4)
+    )
   })
 
   test('iconScale shrinks the icon, and keeps it on the middle', () => {
@@ -171,8 +174,8 @@ describe('renderBadge', () => {
     assert.equal(half.scale, full.scale / 2)
     // narrower, by the width the icon gave up
     assert.ok(
-      widthOf(renderBadge({ items, iconScale: 0.5 })) <
-        widthOf(renderBadge({ items }))
+      getWidth(renderBadge({ items, iconScale: 0.5 })) <
+        getWidth(renderBadge({ items }))
     )
 
     // each is drawn half of its own leftover height from the top, so the
@@ -196,7 +199,7 @@ describe('renderBadge', () => {
 
     // an underline does not change what a glyph advances by, so the badge
     // measures the same — this is what makes the width table still right
-    assert.equal(widthOf(lined), widthOf(plain))
+    assert.equal(getWidth(lined), getWidth(plain))
   })
 
   test('strikethrough crosses out the text without costing width', () => {
@@ -209,7 +212,7 @@ describe('renderBadge', () => {
 
     // every value, not just the first
     assert.equal(struck.match(/text-decoration="line-through"/g)?.length, 2)
-    assert.equal(widthOf(struck), widthOf(plain))
+    assert.equal(getWidth(struck), getWidth(plain))
 
     // with an underline too, both lines are drawn: two attributes on one
     // element would be invalid, and one replacing the other would drop a line
@@ -234,8 +237,8 @@ describe('renderBadge', () => {
     // the bold face advances further, so the pill has to be wider — the
     // whole point of carrying a second table rather than reusing the first
     assert.ok(
-      widthOf(heavy) > widthOf(plain),
-      `${widthOf(heavy)} should exceed ${widthOf(plain)}`
+      getWidth(heavy) > getWidth(plain),
+      `${getWidth(heavy)} should exceed ${getWidth(plain)}`
     )
   })
 
@@ -253,8 +256,8 @@ describe('renderBadge', () => {
     )
     // the pill is sized to the face it is drawn in, not to the default's
     assert.ok(
-      widthOf(arial) < widthOf(verdana),
-      `expected arial (${widthOf(arial)}) to measure narrower than verdana (${widthOf(verdana)})`
+      getWidth(arial) < getWidth(verdana),
+      `expected arial (${getWidth(arial)}) to measure narrower than verdana (${getWidth(verdana)})`
     )
   })
 
@@ -289,12 +292,12 @@ describe('renderBadge', () => {
     const iconOf = (svg: string) => svg.match(/scale\(([\d.]+)\)/)?.[1]
     assert.equal(iconOf(bigger), iconOf(base))
     // larger text needs more room, so the pill grows with it
-    assert.ok(widthOf(bigger) > widthOf(base))
+    assert.ok(getWidth(bigger) > getWidth(base))
   })
 
   test('an emoji advances once, whatever it is built from', () => {
     const widthFor = (value: string) =>
-      widthOf(renderBadge({ items: [{ value }] }))
+      getWidth(renderBadge({ items: [{ value }] }))
 
     // a plain emoji, one carrying a variation selector, and a joined sequence
     // of three code points all draw as one mark and take one advance
@@ -330,11 +333,13 @@ describe('renderBadge', () => {
     // and the badge is only as wide as the icon plus the pill's own ends
     const scale = BASE_HEIGHT / 20
     assert.equal(
-      widthOf(alone),
-      round(6 * scale * 2 + (icon.width * (14 * scale)) / icon.height)
+      getWidth(alone),
+      roundToHundredths(
+        6 * scale * 2 + (icon.width * (14 * scale)) / icon.height
+      )
     )
     assert.ok(
-      widthOf(alone) < widthOf(paired),
+      getWidth(alone) < getWidth(paired),
       'a value and the gap before it should both cost width'
     )
     // and the badge reads as the icon it shows
